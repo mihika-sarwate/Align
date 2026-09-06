@@ -26,7 +26,10 @@ import {
   GitPullRequest,
   BarChart2,
   FileSignature,
-  FileQuestion
+  FileQuestion,
+  UserPlus,
+  CreditCard,
+  Tag
 } from 'lucide-react';
 import './Sidebar.css';
 
