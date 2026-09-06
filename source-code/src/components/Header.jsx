@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell, Calendar, ChevronDown, HelpCircle } from 'lucide-react';
+import { Menu, Bell, Calendar, ChevronDown, HelpCircle, LogOut } from 'lucide-react';
 import './Header.css';
 
 export default function Header({ role = 'admin' }) {
@@ -87,6 +87,18 @@ export default function Header({ role = 'admin' }) {
             <span className="user-role">{isSE ? 'Site Engineer' : isPM ? 'Project Manager' : isPO ? 'Procurement Officer' : isAccounts ? 'Accounts Executive' : isSales ? 'Sales Executive' : 'System Administrator'}</span>
           </div>
         </div>
+
+        <button 
+          className="icon-btn logout-btn" 
+          onClick={() => {
+            window.location.href = '#/login';
+            window.location.reload();
+          }}
+          title="Logout"
+          style={{ marginLeft: '8px', color: '#dc2626' }}
+        >
+          <LogOut size={20} />
+        </button>
       </div>
     </header>
   );
