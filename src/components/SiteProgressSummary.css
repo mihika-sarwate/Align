@@ -1,0 +1,100 @@
+.site-progress-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-list-header {
+  display: flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  padding: 0 0.5rem;
+}
+
+.site-h-info { flex: 2; }
+.site-h-progress { flex: 1.5; text-align: right; }
+.site-h-tasks { flex: 0.5; text-align: center; }
+.site-h-issues { flex: 0.5; text-align: center; }
+
+.site-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.site-item:hover {
+  background-color: var(--bg-main);
+  border-radius: var(--border-radius-sm);
+}
+
+.site-item:last-child {
+  border-bottom: none;
+}
+
+.site-info {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-img {
+  width: 48px;
+  height: 36px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.site-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.site-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.site-progress {
+  flex: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.site-progress .progress-bar-bg {
+  width: 60px;
+}
+
+.site-progress-val {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  width: 3ch;
+}
+
+.site-stats {
+  flex: 0.5;
+  display: flex;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}

@@ -1,0 +1,41 @@
+.po-dashboard .po-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.po-middle-section {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.po-bottom-section {
+  grid-template-columns: 2fr 2fr 1.5fr;
+}
+
+@media (max-width: 1600px) {
+  .po-dashboard .po-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1400px) {
+  .po-middle-section, .po-bottom-section {
+    grid-template-columns: 1fr 1fr;
+  }
+  .po-pipeline-col {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 1024px) {
+  .po-dashboard .po-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .po-middle-section, .po-bottom-section {
+    grid-template-columns: 1fr;
+  }
+  .po-pipeline-col {
+    grid-column: span 1;
+  }
+}

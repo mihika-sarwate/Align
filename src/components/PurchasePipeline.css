@@ -1,0 +1,83 @@
+.pipeline-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.pipeline-visual {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.pipeline-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 60px;
+  border-radius: 4px;
+  position: relative;
+  text-align: center;
+  padding-top: 0.5rem;
+}
+
+.node-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: pre-line;
+}
+
+.node-count {
+  position: absolute;
+  bottom: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 2px solid white;
+}
+
+.pipeline-connector {
+  display: flex;
+  align-items: center;
+  color: var(--border-color);
+}
+
+.pipeline-table-container {
+  padding: 0 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.pipeline-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pipeline-table th, .pipeline-table td {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.pipeline-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.pipeline-table tr:last-child td {
+  border-bottom: none;
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }

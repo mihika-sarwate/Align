@@ -1,0 +1,36 @@
+.pm-dashboard .project-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.pm-bottom-section {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+@media (max-width: 1400px) {
+  .pm-bottom-section {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pm-bottom-section > div:first-child {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 1024px) {
+  .pm-bottom-section {
+    grid-template-columns: 1fr;
+  }
+  .pm-bottom-section > div:first-child {
+    grid-column: span 1;
+  }
+}

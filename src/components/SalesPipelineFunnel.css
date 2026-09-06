@@ -1,0 +1,61 @@
+.pipeline-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.funnel-container {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem;
+  gap: 4px;
+  flex: 1;
+}
+
+.funnel-stage-wrapper {
+  display: flex;
+  align-items: center;
+  height: 36px;
+}
+
+.funnel-stage-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+.funnel-bar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: width 0.3s ease;
+  clip-path: polygon(2% 0%, 98% 0%, 100% 100%, 0% 100%);
+}
+
+/* Let's make it look like a connected funnel by adjusting the clip-path per element if we want, or just basic angled edges. */
+.funnel-container > .funnel-stage-wrapper:nth-child(1) .funnel-bar { clip-path: polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%); }
+.funnel-container > .funnel-stage-wrapper:nth-child(2) .funnel-bar { clip-path: polygon(0% 0%, 100% 0%, 94% 100%, 6% 100%); }
+.funnel-container > .funnel-stage-wrapper:nth-child(3) .funnel-bar { clip-path: polygon(0% 0%, 100% 0%, 92% 100%, 8% 100%); }
+.funnel-container > .funnel-stage-wrapper:nth-child(4) .funnel-bar { clip-path: polygon(0% 0%, 100% 0%, 88% 100%, 12% 100%); }
+.funnel-container > .funnel-stage-wrapper:nth-child(5) .funnel-bar { clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%); }
+.funnel-container > .funnel-stage-wrapper:nth-child(6) .funnel-bar { clip-path: polygon(0% 0%, 100% 0%, 75% 100%, 25% 100%); }
+
+.funnel-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+}
+
+.funnel-count {
+  width: 80px;
+  text-align: right;
+  font-size: 0.75rem;
+}
+
+.funnel-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}

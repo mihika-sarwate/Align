@@ -1,0 +1,60 @@
+.pending-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.approvals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.approval-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.approval-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.approval-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.approval-icon.blue { background-color: var(--color-blue-light); color: var(--color-blue); }
+.approval-icon.purple { background-color: var(--color-purple-light); color: var(--color-purple); }
+.approval-icon.green { background-color: var(--color-green-light); color: var(--color-green); }
+.approval-icon.orange { background-color: var(--color-orange-light); color: var(--color-orange); }
+.approval-icon.red { background-color: var(--color-red-light); color: var(--color-red); }
+
+.approval-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.approval-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.approval-count {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}

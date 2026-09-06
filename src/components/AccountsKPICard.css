@@ -1,0 +1,57 @@
+.accounts-kpi-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem;
+}
+
+.accounts-kpi-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+.accounts-kpi-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.accounts-kpi-values {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+}
+
+.accounts-kpi-count {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.accounts-kpi-amount {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-blue);
+  margin-top: 0.25rem;
+}
+
+.accounts-kpi-amount-large {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 0.5rem;
+}
+
+.accounts-kpi-trend {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.accounts-kpi-footer {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+  display: flex;
+}

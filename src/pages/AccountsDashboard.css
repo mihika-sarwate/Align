@@ -1,0 +1,44 @@
+.accounts-dashboard .accounts-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.accounts-middle-section {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.accounts-bottom-section {
+  grid-template-columns: 2fr 2fr 1.5fr;
+}
+
+@media (max-width: 1600px) {
+  .accounts-dashboard .accounts-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1400px) {
+  .accounts-middle-section {
+    grid-template-columns: 1fr 1fr;
+  }
+  .accounts-middle-section > div:last-child {
+    grid-column: span 2;
+  }
+  .accounts-bottom-section {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .accounts-dashboard .accounts-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .accounts-middle-section, .accounts-bottom-section {
+    grid-template-columns: 1fr;
+  }
+  .accounts-middle-section > div:last-child {
+    grid-column: span 1;
+  }
+}

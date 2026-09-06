@@ -1,0 +1,79 @@
+.expense-overview-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.expense-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.expense-lbl {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.expense-val-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.expense-total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.expense-trend {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.expense-list {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem;
+  gap: 1rem;
+}
+
+.expense-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.expense-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expense-label {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.expense-amount-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.expense-amount {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.expense-pct {
+  font-size: 0.75rem;
+  width: 4ch;
+  text-align: right;
+}
