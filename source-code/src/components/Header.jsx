@@ -12,7 +12,10 @@ export default function Header({ role = 'admin' }) {
   return (
     <header className="header">
       <div className="header-left">
-        <button className="icon-btn menu-btn">
+        <button 
+          className="icon-btn menu-btn"
+          onClick={() => document.body.classList.toggle('sidebar-collapsed')}
+        >
           <Menu size={20} />
         </button>
         {isSE && (

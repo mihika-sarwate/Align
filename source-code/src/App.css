@@ -8,6 +8,11 @@
   margin-left: 260px; /* Sidebar width */
   display: flex;
   flex-direction: column;
+  transition: margin-left 0.3s ease;
+}
+
+body.sidebar-collapsed .main-content {
+  margin-left: 80px;
 }
 
 .dashboard-content {
