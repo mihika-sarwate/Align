@@ -1,0 +1,95 @@
+.project-timeline-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  padding-bottom: 24px;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 24px;
+  bottom: -6px;
+  width: 2px;
+  background-color: var(--border-color);
+  z-index: 1;
+}
+
+.timeline-item.completed .timeline-line {
+  background-color: var(--color-green);
+}
+
+.icon-completed {
+  color: var(--color-green);
+  background: white;
+}
+
+.icon-in-progress {
+  color: var(--color-blue);
+  background: white;
+}
+
+.icon-pending {
+  color: var(--text-secondary);
+  background: white;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-top: 0px;
+}
+
+.timeline-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.timeline-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.timeline-desc {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.timeline-item.completed .timeline-title {
+  color: var(--text-primary);
+}
+
+.timeline-item.pending .timeline-title {
+  color: var(--text-secondary);
+}

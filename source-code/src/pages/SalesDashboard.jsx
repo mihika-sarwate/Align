@@ -11,7 +11,7 @@ import SalesPaymentSchedule from '../components/SalesPaymentSchedule';
 import ReceivablesSummary from '../components/ReceivablesSummary';
 import TodaysActivities from '../components/TodaysActivities';
 import SalesQuickActions from '../components/SalesQuickActions';
-import SiteProgressSummary from '../components/SiteProgressSummary';
+import ProjectTimeline from '../components/ProjectTimeline';
 import '../App.css';
 import './SalesDashboard.css';
 
@@ -101,7 +101,7 @@ export default function SalesDashboard() {
 
           <div className="dashboard-grid sales-extra-section">
             <div>
-              <SiteProgressSummary />
+              <ProjectTimeline />
             </div>
           </div>
 
