@@ -18,9 +18,11 @@ body.sidebar-collapsed .sidebar {
 
 body.sidebar-collapsed .logo-text,
 body.sidebar-collapsed .nav-label,
-body.sidebar-collapsed .nav-section-title,
+body.sidebar-collapsed .section-title,
 body.sidebar-collapsed .sidebar-upgrade,
-body.sidebar-collapsed .nav-chevron {
+body.sidebar-collapsed .nav-chevron,
+body.sidebar-collapsed .nav-badge,
+body.sidebar-collapsed .sidebar-user-info {
   display: none;
 }
 
