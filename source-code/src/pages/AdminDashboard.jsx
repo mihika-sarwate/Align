@@ -16,13 +16,8 @@ import '../App.css';
 
 export default function AdminDashboard() {
   return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="main-content">
-        <Header />
-        
-        <main className="dashboard-content">
-          <div className="dashboard-header">
+    <>
+      <div className="dashboard-header">
             <div>
               <h1 className="welcome-text">Welcome back, Admin! 👋</h1>
               <p className="welcome-subtext">Here's what's happening across all projects and sites.</p>
@@ -109,9 +104,6 @@ export default function AdminDashboard() {
               <UpcomingEvents />
             </div>
           </div>
-          
-        </main>
-      </div>
-    </div>
+    </>
   );
 }

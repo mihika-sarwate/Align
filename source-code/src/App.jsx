@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/AdminDashboard';
 import ProjectManagerDashboard from './pages/ProjectManagerDashboard';
 import SiteEngineerDashboard from './pages/SiteEngineerDashboard';
@@ -7,6 +8,10 @@ import ProcurementDashboard from './pages/ProcurementDashboard';
 import AccountsDashboard from './pages/AccountsDashboard';
 import SalesDashboard from './pages/SalesDashboard';
 import Login from './pages/Login';
+import ProjectsPage from './pages/admin/ProjectsPage';
+import SitesPage from './pages/admin/SitesPage';
+import TasksPage from './pages/admin/TasksPage';
+import EmployeesPage from './pages/admin/EmployeesPage';
 
 function App() {
   const [auth, setAuth] = useState(null); // { role: 'Admin' | 'Project Manager' | 'Site Engineer' | 'Procurement Officer' }
@@ -22,12 +27,18 @@ function App() {
         path="/admin" 
         element={
           auth?.role === 'Admin' ? (
-            <AdminDashboard />
+            <AdminLayout role="admin" />
           ) : (
             <Navigate to="/login" replace />
           )
         } 
-      />
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="projects" element={<ProjectsPage />} />
+        <Route path="sites" element={<SitesPage />} />
+        <Route path="tasks" element={<TasksPage />} />
+        <Route path="employees" element={<EmployeesPage />} />
+      </Route>
 
       <Route 
         path="/pm" 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -34,26 +35,26 @@ import {
 import './Sidebar.css';
 
 const navItemsAdmin = [
-  { icon: <LayoutDashboard size={18} />, label: 'Dashboard', active: true },
-  { icon: <Briefcase size={18} />, label: 'Projects', hasSub: true },
-  { icon: <MapPin size={18} />, label: 'Sites' },
-  { icon: <CheckSquare size={18} />, label: 'Tasks' },
-  { icon: <Package size={18} />, label: 'Materials' },
-  { icon: <Box size={18} />, label: 'Inventory' },
-  { icon: <ShoppingCart size={18} />, label: 'Purchases' },
-  { icon: <IndianRupee size={18} />, label: 'Expenses' },
-  { icon: <TrendingUp size={18} />, label: 'Progress' },
-  { icon: <AlertTriangle size={18} />, label: 'Issues' },
-  { icon: <FileText size={18} />, label: 'Documents' },
-  { icon: <Activity size={18} />, label: 'Activity' },
+  { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/admin' },
+  { icon: <Briefcase size={18} />, label: 'Projects', hasSub: true, path: '/admin/projects' },
+  { icon: <MapPin size={18} />, label: 'Sites', path: '/admin/sites' },
+  { icon: <CheckSquare size={18} />, label: 'Tasks', path: '/admin/tasks' },
+  { icon: <Package size={18} />, label: 'Materials', path: '/admin/materials' },
+  { icon: <Box size={18} />, label: 'Inventory', path: '/admin/inventory' },
+  { icon: <ShoppingCart size={18} />, label: 'Purchases', path: '/admin/purchases' },
+  { icon: <IndianRupee size={18} />, label: 'Expenses', path: '/admin/expenses' },
+  { icon: <TrendingUp size={18} />, label: 'Progress', path: '/admin/progress' },
+  { icon: <AlertTriangle size={18} />, label: 'Issues', path: '/admin/issues' },
+  { icon: <FileText size={18} />, label: 'Documents', path: '/admin/documents' },
+  { icon: <Activity size={18} />, label: 'Activity', path: '/admin/activity' },
 ];
 
 const orgItemsAdmin = [
-  { icon: <Users size={18} />, label: 'Employees' },
-  { icon: <Shield size={18} />, label: 'Roles & Permissions' },
-  { icon: <Truck size={18} />, label: 'Vendors' },
-  { icon: <UserCircle size={18} />, label: 'Clients' },
-  { icon: <Settings size={18} />, label: 'Settings' },
+  { icon: <Users size={18} />, label: 'Employees', path: '/admin/employees' },
+  { icon: <Shield size={18} />, label: 'Roles & Permissions', path: '/admin/roles' },
+  { icon: <Truck size={18} />, label: 'Vendors', path: '/admin/vendors' },
+  { icon: <UserCircle size={18} />, label: 'Clients', path: '/admin/clients' },
+  { icon: <Settings size={18} />, label: 'Settings', path: '/admin/settings' },
 ];
 
 const navItemsPM = [
@@ -166,13 +167,27 @@ export default function Sidebar({ role = 'admin' }) {
   const isAccounts = role === 'accounts';
   const isSales = role === 'sales';
   
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const navItems = isSE ? navItemsSE : isPM ? navItemsPM : isPO ? navItemsPO : isAccounts ? navItemsAccounts : isSales ? navItemsSales : navItemsAdmin;
   const shortcuts = isSE ? shortcutsSE : isPM ? shortcutsPM : isPO ? shortcutsPO : [];
+
+  // Helper to determine active route
+  const isActive = (path) => {
+    if (!path) return false;
+    if (path === '/admin' && location.pathname !== '/admin') return false;
+    return location.pathname.startsWith(path);
+  };
 
   // Helper to render sectioned nav items for accounts
   const renderNavList = (items, filterSection) => {
     return items.filter(item => item.section === filterSection || (!filterSection && !item.section)).map((item, idx) => (
-      <li key={idx} className={`nav-item ${item.active ? 'active' : ''}`}>
+      <li 
+        key={idx} 
+        className={`nav-item ${isActive(item.path) || item.active ? 'active' : ''}`}
+        onClick={() => item.path && navigate(item.path)}
+      >
         <div className="nav-item-content">
           <span className="nav-icon">{item.icon}</span>
           <span className="nav-label">{item.label}</span>
@@ -222,7 +237,11 @@ export default function Sidebar({ role = 'admin' }) {
         ) : (
           <ul className="nav-list">
             {navItems.map((item, idx) => (
-              <li key={idx} className={`nav-item ${item.active ? 'active' : ''}`}>
+              <li 
+                key={idx} 
+                className={`nav-item ${isActive(item.path) || item.active ? 'active' : ''}`}
+                onClick={() => item.path && navigate(item.path)}
+              >
                 <div className="nav-item-content">
                   <span className="nav-icon">{item.icon}</span>
                   <span className="nav-label">{item.label}</span>
@@ -238,7 +257,11 @@ export default function Sidebar({ role = 'admin' }) {
             <span className="section-title">ORGANIZATION</span>
             <ul className="nav-list">
               {orgItemsAdmin.map((item, idx) => (
-                <li key={idx} className="nav-item">
+                <li 
+                  key={idx} 
+                  className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
+                  onClick={() => item.path && navigate(item.path)}
+                >
                   <div className="nav-item-content">
                     <span className="nav-icon">{item.icon}</span>
                     <span className="nav-label">{item.label}</span>
