@@ -8,6 +8,9 @@ import PendingApprovals from '../components/PendingApprovals';
 import TasksChart from '../components/TasksChart';
 import ActivityFeed from '../components/ActivityFeed';
 import UpcomingEvents from '../components/UpcomingEvents';
+import SiteProgressSummary from '../components/SiteProgressSummary';
+import SETasksList from '../components/SETasksList';
+import MaterialsAtAGlance from '../components/MaterialsAtAGlance';
 import { Building2, MapPin, CheckSquare, AlertTriangle, IndianRupee } from 'lucide-react';
 import '../App.css';
 
@@ -83,6 +86,18 @@ export default function AdminDashboard() {
             </div>
             <div>
               <TasksChart />
+            </div>
+          </div>
+          
+          <div className="dashboard-grid admin-extra-section" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginTop: '20px' }}>
+            <div className="col-span-1">
+              <SiteProgressSummary />
+            </div>
+            <div className="col-span-1">
+              <SETasksList />
+            </div>
+            <div className="col-span-1">
+              <MaterialsAtAGlance />
             </div>
           </div>
           

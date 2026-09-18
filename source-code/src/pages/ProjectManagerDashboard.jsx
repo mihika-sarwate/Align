@@ -10,6 +10,8 @@ import ActivityFeed from '../components/ActivityFeed';
 import UpcomingEvents from '../components/UpcomingEvents';
 import SiteProgressSummary from '../components/SiteProgressSummary';
 import FinancialSummary from '../components/FinancialSummary';
+import SETasksList from '../components/SETasksList';
+import MaterialsAtAGlance from '../components/MaterialsAtAGlance';
 import '../App.css';
 import './ProjectManagerDashboard.css';
 
@@ -80,6 +82,15 @@ export default function ProjectManagerDashboard() {
             </div>
             <div>
               <TasksChart />
+            </div>
+          </div>
+
+          <div className="dashboard-grid admin-extra-section" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginTop: '20px', marginBottom: '20px' }}>
+            <div className="col-span-1">
+              <SETasksList />
+            </div>
+            <div className="col-span-1">
+              <MaterialsAtAGlance />
             </div>
           </div>
 

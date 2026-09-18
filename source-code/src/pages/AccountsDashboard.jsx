@@ -10,6 +10,7 @@ import PendingInvoicesTable from '../components/PendingInvoicesTable';
 import PaymentsDueTable from '../components/PaymentsDueTable';
 import ActivityFeed from '../components/ActivityFeed';
 import AccountsQuickActions from '../components/AccountsQuickActions';
+import MaterialsAtAGlance from '../components/MaterialsAtAGlance';
 import '../App.css';
 import './AccountsDashboard.css';
 
@@ -90,6 +91,12 @@ export default function AccountsDashboard() {
             </div>
             <div>
               <ExpenseOverview />
+            </div>
+          </div>
+
+          <div className="dashboard-grid admin-extra-section" style={{ gridTemplateColumns: 'repeat(1, 1fr)', gap: '20px', marginTop: '20px', marginBottom: '20px' }}>
+            <div className="col-span-1">
+              <MaterialsAtAGlance />
             </div>
           </div>
 

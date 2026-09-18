@@ -11,6 +11,7 @@ import SalesPaymentSchedule from '../components/SalesPaymentSchedule';
 import ReceivablesSummary from '../components/ReceivablesSummary';
 import TodaysActivities from '../components/TodaysActivities';
 import SalesQuickActions from '../components/SalesQuickActions';
+import SiteProgressSummary from '../components/SiteProgressSummary';
 import '../App.css';
 import './SalesDashboard.css';
 
@@ -95,6 +96,12 @@ export default function SalesDashboard() {
             </div>
             <div>
               <BookingsOverview />
+            </div>
+          </div>
+
+          <div className="dashboard-grid admin-extra-section" style={{ gridTemplateColumns: 'repeat(1, 1fr)', gap: '20px', marginTop: '20px', marginBottom: '20px' }}>
+            <div className="col-span-1">
+              <SiteProgressSummary />
             </div>
           </div>
 
