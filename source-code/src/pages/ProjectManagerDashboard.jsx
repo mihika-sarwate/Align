@@ -85,11 +85,11 @@ export default function ProjectManagerDashboard() {
             </div>
           </div>
 
-          <div className="dashboard-grid admin-extra-section" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginTop: '20px', marginBottom: '20px' }}>
-            <div className="col-span-1">
+          <div className="dashboard-grid pm-extra-section">
+            <div>
               <SETasksList />
             </div>
-            <div className="col-span-1">
+            <div>
               <MaterialsAtAGlance />
             </div>
           </div>

@@ -99,8 +99,8 @@ export default function SalesDashboard() {
             </div>
           </div>
 
-          <div className="dashboard-grid admin-extra-section" style={{ gridTemplateColumns: 'repeat(1, 1fr)', gap: '20px', marginTop: '20px', marginBottom: '20px' }}>
-            <div className="col-span-1">
+          <div className="dashboard-grid sales-extra-section">
+            <div>
               <SiteProgressSummary />
             </div>
           </div>

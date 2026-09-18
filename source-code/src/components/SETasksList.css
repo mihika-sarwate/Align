@@ -1,6 +1,7 @@
 .tasks-list-card {
   display: flex;
   flex-direction: column;
+  overflow-x: auto;
 }
 
 .tasks-tabs {

@@ -77,6 +77,19 @@ body.sidebar-collapsed .main-content {
   grid-column: span 2;
 }
 
+.admin-extra-section {
+  grid-template-columns: 1.2fr 2fr 1.2fr;
+}
+
+.pm-extra-section {
+  grid-template-columns: 2fr 1fr;
+}
+
+.accounts-extra-section,
+.sales-extra-section {
+  grid-template-columns: 1fr;
+}
+
 /* Make sure all cards stretch to fill height if needed */
 .card {
   height: 100%;
@@ -96,6 +109,15 @@ body.sidebar-collapsed .main-content {
   .middle-section > div:first-child {
     grid-column: span 2;
   }
+  .admin-extra-section {
+    grid-template-columns: 1fr 1fr;
+  }
+  .admin-extra-section > div:nth-child(2) {
+    grid-column: span 2;
+  }
+  .pm-extra-section {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -108,10 +130,12 @@ body.sidebar-collapsed .main-content {
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .middle-section {
+  .middle-section,
+  .admin-extra-section {
     grid-template-columns: 1fr;
   }
-  .middle-section > div:first-child {
+  .middle-section > div:first-child,
+  .admin-extra-section > div:nth-child(2) {
     grid-column: span 1;
   }
   .bottom-section {
