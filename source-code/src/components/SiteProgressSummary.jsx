@@ -3,7 +3,7 @@ import './SiteProgressSummary.css';
 
 const sites = [
   {
-    image: 'https://images.unsplash.com/photo-1541888086425-d81bb19240f5?auto=format&fit=crop&w=100&q=80',
+    image: 'https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?auto=format&fit=crop&w=100&q=80',
     title: 'Project A - Site 01',
     subtitle: 'Residential Tower',
     progress: 78,
@@ -19,7 +19,7 @@ const sites = [
     issues: 1
   },
   {
-    image: 'https://images.unsplash.com/photo-1504307651254-35680f356f12?auto=format&fit=crop&w=100&q=80',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=100&q=80',
     title: 'Project B - Site 01',
     subtitle: 'Commercial Complex',
     progress: 45,

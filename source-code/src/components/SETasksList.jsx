@@ -41,7 +41,7 @@ export default function SETasksList() {
   return (
     <div className="card tasks-list-card">
       <div className="card-header">
-        <h3 className="card-title">MY TASKS</h3>
+        <h3 className="card-title">TASK ALLOCATION</h3>
         <a href="#" className="view-all-link">View all</a>
       </div>
       
