@@ -12,7 +12,18 @@ import ProjectsPage from './pages/admin/ProjectsPage';
 import SitesPage from './pages/admin/SitesPage';
 import TasksPage from './pages/admin/TasksPage';
 import EmployeesPage from './pages/admin/EmployeesPage';
-import PlaceholderPage from './pages/admin/PlaceholderPage';
+import MaterialsPage from './pages/admin/MaterialsPage';
+import InventoryPage from './pages/admin/InventoryPage';
+import PurchasesPage from './pages/admin/PurchasesPage';
+import ExpensesPage from './pages/admin/ExpensesPage';
+import ProgressPage from './pages/admin/ProgressPage';
+import IssuesPage from './pages/admin/IssuesPage';
+import DocumentsPage from './pages/admin/DocumentsPage';
+import ActivityPage from './pages/admin/ActivityPage';
+import RolesPage from './pages/admin/RolesPage';
+import VendorsPage from './pages/admin/VendorsPage';
+import ClientsPage from './pages/admin/ClientsPage';
+import SettingsPage from './pages/admin/SettingsPage';
 
 function App() {
   const [auth, setAuth] = useState(null); // { role: 'Admin' | 'Project Manager' | 'Site Engineer' | 'Procurement Officer' }
@@ -39,19 +50,19 @@ function App() {
         <Route path="sites" element={<SitesPage />} />
         <Route path="tasks" element={<TasksPage />} />
         <Route path="employees" element={<EmployeesPage />} />
-        <Route path="materials" element={<PlaceholderPage title="Materials" />} />
-        <Route path="inventory" element={<PlaceholderPage title="Inventory" />} />
-        <Route path="purchases" element={<PlaceholderPage title="Purchases" />} />
-        <Route path="expenses" element={<PlaceholderPage title="Expenses" />} />
-        <Route path="progress" element={<PlaceholderPage title="Progress" />} />
-        <Route path="issues" element={<PlaceholderPage title="Issues" />} />
-        <Route path="documents" element={<PlaceholderPage title="Documents" />} />
-        <Route path="activity" element={<PlaceholderPage title="Activity" />} />
-        <Route path="roles" element={<PlaceholderPage title="Roles & Permissions" />} />
-        <Route path="vendors" element={<PlaceholderPage title="Vendors" />} />
-        <Route path="clients" element={<PlaceholderPage title="Clients" />} />
-        <Route path="settings" element={<PlaceholderPage title="Settings" />} />
-        <Route path="*" element={<PlaceholderPage title="Not Found" />} />
+        <Route path="materials" element={<MaterialsPage />} />
+        <Route path="inventory" element={<InventoryPage />} />
+        <Route path="purchases" element={<PurchasesPage />} />
+        <Route path="expenses" element={<ExpensesPage />} />
+        <Route path="progress" element={<ProgressPage />} />
+        <Route path="issues" element={<IssuesPage />} />
+        <Route path="documents" element={<DocumentsPage />} />
+        <Route path="activity" element={<ActivityPage />} />
+        <Route path="roles" element={<RolesPage />} />
+        <Route path="vendors" element={<VendorsPage />} />
+        <Route path="clients" element={<ClientsPage />} />
+        <Route path="settings" element={<SettingsPage />} />
+        <Route path="*" element={<AdminDashboard />} />
       </Route>
 
       <Route 
