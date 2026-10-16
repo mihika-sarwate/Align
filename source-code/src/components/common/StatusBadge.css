@@ -1,34 +1,18 @@
-.status-badge {
+.badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
+  padding: 3px 10px;
   border-radius: 9999px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 
-.status-success {
-  background-color: var(--color-green-light);
-  color: var(--color-green);
-}
-
-.status-info {
-  background-color: var(--color-blue-light);
-  color: var(--color-blue);
-}
-
-.status-warning {
-  background-color: var(--color-orange-light);
-  color: var(--color-orange);
-}
-
-.status-danger {
-  background-color: var(--color-red-light);
-  color: var(--color-red);
-}
-
-.status-default {
-  background-color: #f1f5f9;
-  color: #64748b;
-}
+.badge.green { background-color: var(--color-green-light); color: #166534; }
+.badge.blue { background-color: var(--color-blue-light); color: #1e40af; }
+.badge.red { background-color: var(--color-red-light); color: #991b1b; }
+.badge.orange { background-color: var(--color-orange-light); color: #9a3412; }
+.badge.purple { background-color: var(--color-purple-light); color: #5b21b6; }
+.badge.teal { background-color: var(--color-teal-light); color: #0f766e; }
+.badge.gray { background-color: #f3f4f6; color: #4b5563; }

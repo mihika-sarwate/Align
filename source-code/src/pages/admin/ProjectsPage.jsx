@@ -1,55 +1,222 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useApp } from '../../store/AppContext';
+import TabNav from '../../components/TabNav';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import StatusBadge from '../../components/common/StatusBadge';
-import KPICard from '../../components/KPICard';
-import { Building2, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import SearchFilterBar from '../../components/SearchFilterBar';
+import Modal from '../../components/Modal';
 
-const mockProjects = [
-  { id: 'PRJ-101', name: 'Alpha Residential Tower', client: 'Apex Corp', pm: 'Ramesh Singh', sites: 3, start: '12 Jan 2024', end: '15 Dec 2025', progress: 45, budget: '₹ 45.2 Cr', status: 'Active' },
-  { id: 'PRJ-102', name: 'Omega Tech Park', client: 'Omega Systems', pm: 'Suresh Kumar', sites: 1, start: '05 Mar 2024', end: '30 Aug 2025', progress: 28, budget: '₹ 120 Cr', status: 'Active' },
-  { id: 'PRJ-103', name: 'City Center Mall', client: 'City Group', pm: 'Anita Desai', sites: 2, start: '10 Nov 2023', end: '01 May 2025', progress: 78, budget: '₹ 85 Cr', status: 'Delayed' },
-  { id: 'PRJ-104', name: 'Green Valley Villas', client: 'Green Homes', pm: 'Vikram Patel', sites: 4, start: '20 Sep 2024', end: '10 Jan 2026', progress: 5, budget: '₹ 32 Cr', status: 'Planning' },
-  { id: 'PRJ-105', name: 'Sunrise Apartments', client: 'Sunrise Buildcon', pm: 'Neha Sharma', sites: 2, start: '01 Feb 2023', end: '15 Aug 2024', progress: 100, budget: '₹ 22 Cr', status: 'Completed' },
+const TABS = [
+  'Overview',
+  'Sites',
+  'Tasks',
+  'Project Phases',
+  'Progress',
+  'Budget & Expenses',
+  'Materials & Purchases',
+  'Issues',
+  'Documents',
+  'Activity'
 ];
 
 export default function ProjectsPage() {
+  const { state, dispatch } = useApp();
+  const [activeTab, setActiveTab] = useState('Overview');
+  const [search, setSearch] = useState('');
+  const [showModal, setShowModal] = useState(false);
+
+  const [newProject, setNewProject] = useState({
+    name: '',
+    clientName: 'Apex Corp',
+    pm: 'EMP-002',
+    description: '',
+    startDate: '2024-09-01',
+    endDate: '2026-03-31',
+    budget: 500000000
+  });
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    const id = 'PRJ-' + (100 + state.projects.length + 1);
+    const pmObj = state.employees.find(emp => emp.id === newProject.pm);
+    dispatch({
+      type: 'CREATE_PROJECT',
+      payload: {
+        ...newProject,
+        id,
+        pmName: pmObj?.name || 'Rahul Mehta',
+        budget: Number(newProject.budget),
+        progress: 0,
+        status: 'Active'
+      }
+    });
+    setShowModal(false);
+    alert('Project ' + id + ' (' + newProject.name + ') initialized.');
+  };
+
+  const filtered = state.projects.filter(p => {
+    return !search ||
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      (p.clientName || '').toLowerCase().includes(search.toLowerCase()) ||
+      (p.pmName || '').toLowerCase().includes(search.toLowerCase());
+  });
+
   const columns = [
-    { header: 'ID', accessor: 'id', cell: (row) => <span style={{fontWeight: 600, color: 'var(--color-blue)'}}>{row.id}</span> },
-    { header: 'Project Name', accessor: 'name', cell: (row) => <span style={{fontWeight: 600}}>{row.name}</span> },
-    { header: 'Client', accessor: 'client' },
-    { header: 'Project Manager', accessor: 'pm' },
-    { header: 'Sites', accessor: 'sites' },
-    { header: 'Timeline', accessor: 'timeline', cell: (row) => <span style={{fontSize: '0.75rem'}}>{row.start} - {row.end}</span> },
-    { header: 'Progress', accessor: 'progress', cell: (row) => (
-      <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-        <div style={{flex: 1, height: '6px', background: '#e5e7eb', borderRadius: '3px'}}>
-          <div style={{height: '100%', background: 'var(--color-blue)', borderRadius: '3px', width: `${row.progress}%`}}></div>
+    { header: 'Project ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+    { header: 'Project Name', accessor: 'name', cell: r => <span style={{ fontWeight: 600 }}>{r.name}</span> },
+    { header: 'Client', accessor: 'clientName' },
+    { header: 'Project Manager', accessor: 'pmName' },
+    { header: 'Budget', accessor: 'budget', cell: r => '₹' + (r.budget / 10000000).toFixed(1) + ' Cr' },
+    { header: 'Timeline', accessor: 'startDate', cell: r => r.startDate + ' to ' + r.endDate },
+    { header: 'Progress', accessor: 'progress', cell: r => (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ flex: 1, height: '6px', background: '#e5e7eb', borderRadius: '3px' }}>
+          <div style={{ height: '100%', background: 'var(--color-blue)', borderRadius: '3px', width: r.progress + '%' }}></div>
         </div>
-        <span style={{fontSize: '0.75rem', fontWeight: 600}}>{row.progress}%</span>
+        <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{r.progress}%</span>
       </div>
     )},
-    { header: 'Status', accessor: 'status', cell: (row) => <StatusBadge status={row.status} /> },
+    { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
   ];
 
   return (
     <>
-      <PageHeader 
-        title="Projects" 
-        subtitle="Manage all company projects and their sites."
-        searchPlaceholder="Search projects..."
+      <PageHeader
+        title="Projects & Development Portfolios"
+        subtitle="Master oversight across real estate developments, project budgets, phases, and construction timelines."
         actionLabel="Create Project"
-        onAction={() => alert('Create Project modal')}
+        onAction={() => setShowModal(true)}
       />
+      <TabNav tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="kpi-grid" style={{ marginBottom: '24px' }}>
-        <KPICard title="Total Projects" value="24" icon={<Building2 size={24} />} color="blue" />
-        <KPICard title="Active Projects" value="16" icon={<Clock size={24} />} color="teal" />
-        <KPICard title="Completed Projects" value="7" icon={<CheckCircle size={24} />} color="green" />
-        <KPICard title="Projects At Risk" value="1" icon={<AlertTriangle size={24} />} color="red" />
+      <div className="card" style={{ padding: '16px' }}>
+        <SearchFilterBar searchValue={search} onSearchChange={setSearch} searchPlaceholder="Search projects by name, client, PM..." />
+
+        {activeTab === 'Overview' && <DataTable columns={columns} data={filtered} />}
+
+        {activeTab === 'Sites' && (
+          <DataTable
+            columns={[
+              { header: 'Site ID', accessor: 'id' },
+              { header: 'Site Name', accessor: 'name' },
+              { header: 'Project', accessor: 'projectName' },
+              { header: 'Engineer', accessor: 'seName' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.sites}
+          />
+        )}
+
+        {activeTab === 'Tasks' && (
+          <DataTable
+            columns={[
+              { header: 'Code', accessor: 'taskCode' },
+              { header: 'Title', accessor: 'title' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Due Date', accessor: 'dueDate' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.tasks}
+          />
+        )}
+
+        {activeTab === 'Project Phases' && (
+          <DataTable
+            columns={[
+              { header: 'Order', accessor: 'order' },
+              { header: 'Phase Code', accessor: 'code', cell: r => <span style={{ fontWeight: 700, color: 'var(--color-blue)' }}>{r.code}</span> },
+              { header: 'Phase Description', accessor: 'name', cell: r => <span style={{ fontWeight: 600 }}>{r.name}</span> },
+              { header: 'Target Project', accessor: 'projectId' }
+            ]}
+            data={state.phases}
+          />
+        )}
+
+        {activeTab === 'Budget & Expenses' && (
+          <DataTable
+            columns={[
+              { header: 'Project ID', accessor: 'id' },
+              { header: 'Project Name', accessor: 'name' },
+              { header: 'Total Sanctioned Budget', accessor: 'budget', cell: r => '₹' + (r.budget / 10000000).toFixed(2) + ' Cr' },
+              { header: 'Disbursed Invoices', accessor: 'disbursed', cell: r => {
+                const total = state.invoices.filter(i => i.projectId === r.id).reduce((a, b) => a + (b.totalAmount || 0), 0);
+                return '₹' + (total / 10000000).toFixed(2) + ' Cr';
+              }}
+            ]}
+            data={state.projects}
+          />
+        )}
+
+        {activeTab === 'Issues' && (
+          <DataTable
+            columns={[
+              { header: 'ID', accessor: 'id' },
+              { header: 'Title', accessor: 'title' },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Priority', accessor: 'priority' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.issues}
+          />
+        )}
+
+        {activeTab === 'Documents' && (
+          <DataTable
+            columns={[
+              { header: 'Document', accessor: 'name' },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Category', accessor: 'category' }
+            ]}
+            data={state.documents.filter(d => Boolean(d.projectId))}
+          />
+        )}
+
+        {!['Overview', 'Sites', 'Tasks', 'Project Phases', 'Budget & Expenses', 'Issues', 'Documents'].includes(activeTab) && (
+          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            Showing {activeTab} across all company projects.
+          </div>
+        )}
       </div>
 
-      <DataTable columns={columns} data={mockProjects} />
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Create New Development Project">
+        <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Project Name</label>
+            <input required type="text" value={newProject.name} onChange={e => setNewProject({ ...newProject, name: e.target.value })} placeholder="e.g. Skyline Residency" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Client Entity</label>
+              <input required type="text" value={newProject.clientName} onChange={e => setNewProject({ ...newProject, clientName: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Assigned Project Manager</label>
+              <select value={newProject.pm} onChange={e => setNewProject({ ...newProject, pm: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+                {state.employees.filter(e => e.role === 'Project Manager').map(e => <option key={e.id} value={e.id}>{e.name} ({e.id})</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Sanctioned Budget (₹)</label>
+            <input required type="number" min="1000000" value={newProject.budget} onChange={e => setNewProject({ ...newProject, budget: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Start Date</label>
+              <input type="date" value={newProject.startDate} onChange={e => setNewProject({ ...newProject, startDate: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Expected Completion</label>
+              <input type="date" value={newProject.endDate} onChange={e => setNewProject({ ...newProject, endDate: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '12px' }}>
+            <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+            <button type="submit" className="btn btn-primary">Create Project</button>
+          </div>
+        </form>
+      </Modal>
     </>
   );
 }

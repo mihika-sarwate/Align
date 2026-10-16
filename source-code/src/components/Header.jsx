@@ -1,106 +1,140 @@
-import React from 'react';
-import { Menu, Bell, Calendar, ChevronDown, HelpCircle, LogOut } from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu, Bell, ChevronDown, LogOut, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useApp } from '../store/AppContext';
 import './Header.css';
 
+const roleUserMap = {
+  admin:     { initials: 'AS', name: 'Arjun Sharma',       role: 'System Administrator' },
+  pm:        { initials: 'RM', name: 'Rahul Mehta',        role: 'Project Manager' },
+  se:        { initials: 'RK', name: 'Rajesh K',           role: 'Site Engineer' },
+  po:        { initials: 'PR', name: 'Priya Rao',          role: 'Procurement Officer' },
+  accounts:  { initials: 'AC', name: 'Anjali Chauhan',     role: 'Accounts' },
+  architect: { initials: 'VP', name: 'Vikram Patel',       role: 'Architect' },
+  contractor:{ initials: 'RC', name: 'Ramesh Contractor',  role: 'Contractor' },
+  sales:     { initials: 'RS', name: 'Riya Sharma',        role: 'Sales Executive' },
+};
+
 export default function Header({ role = 'admin' }) {
-  const isPM = role === 'pm';
-  const isSE = role === 'se';
-  const isPO = role === 'po';
-  const isAccounts = role === 'accounts';
-  const isSales = role === 'sales';
+  const navigate = useNavigate();
+  const { state, dispatch } = useApp();
+  const [showNotif, setShowNotif] = useState(false);
+  const user = roleUserMap[role] || roleUserMap.admin;
+
+  const userNotifs = state.notifications.filter(n => !n.read);
+  const unreadCount = userNotifs.length;
+
+  const handleMarkRead = (id) => {
+    dispatch({ type: 'MARK_NOTIFICATION_READ', payload: id });
+  };
+
+  const handleMarkAllRead = () => {
+    dispatch({ type: 'MARK_ALL_NOTIFICATIONS_READ' });
+    setShowNotif(false);
+  };
+
+  const handleLogout = () => {
+    navigate('/login');
+    window.location.reload();
+  };
 
   return (
     <header className="header">
       <div className="header-left">
-        <button 
+        <button
           className="icon-btn menu-btn"
           onClick={() => document.body.classList.toggle('sidebar-collapsed')}
+          title="Toggle sidebar"
         >
           <Menu size={20} />
         </button>
-        {isSE && (
-          <div className="se-site-selector">
-            <span>Project A / Site 01</span>
-            <ChevronDown size={16} />
-          </div>
-        )}
-        {isPO && (
-          <div className="po-header-title">
-            Procurement Dashboard
-          </div>
-        )}
-        {isAccounts && (
-          <div className="po-header-title">
-            Accounts Dashboard
-          </div>
-        )}
-        {isSales && (
-          <div className="po-header-title">
-            Sales Dashboard
-          </div>
-        )}
       </div>
-      
+
       <div className="header-right">
-        {(isPO || isAccounts || isSales) && (
-          <div className="po-date-picker">
-            <Calendar size={16} />
-            <span>01 Sep 2024 - 07 Sep 2024</span>
-            <ChevronDown size={16} />
-          </div>
-        )}
-        
-        <div className="notification-wrapper">
-          <button className="icon-btn">
+        {/* Notification Bell */}
+        <div className="notification-wrapper" style={{ position: 'relative' }}>
+          <button
+            className="icon-btn"
+            onClick={() => setShowNotif(s => !s)}
+            title="Notifications"
+          >
             <Bell size={20} />
           </button>
-          <span className={`notification-badge ${isPM || isSE || isPO || isAccounts || isSales ? 'red-badge' : ''}`}>
-            {isSE ? '3' : (isPO || isSales) ? '4' : isAccounts ? '5' : isPM ? '6' : '12'}
-          </span>
-        </div>
-        
-        {isPO && (
-          <button className="icon-btn">
-            <HelpCircle size={20} />
-          </button>
-        )}
-
-        {(isPM || isAccounts) && (
-          <button className="icon-btn">
-            <Calendar size={20} />
-          </button>
-        )}
-        
-        <div className="user-profile">
-          {isSE ? (
-            <div className="avatar pm-avatar bg-slate">SE</div>
-          ) : isPM ? (
-            <div className="avatar pm-avatar">RM</div>
-          ) : isPO ? (
-            <div className="avatar pm-avatar bg-purple-solid">PR</div>
-          ) : isAccounts ? (
-            <div className="avatar pm-avatar bg-purple-solid">AC</div>
-          ) : isSales ? (
-            <div className="avatar pm-avatar bg-purple-solid">RS</div>
-          ) : (
-            <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff&rounded=true" alt="User Avatar" className="avatar" />
+          {unreadCount > 0 && (
+            <span className="notification-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
           )}
-          <div className="user-info">
-            <span className="user-name">{isSE ? 'XYZ' : isPM ? 'Rahul Mehta' : isPO ? 'Priya Rao' : isAccounts ? 'Anjali Chauhan' : isSales ? 'Riya Sharma' : 'Admin'}</span>
-            <span className="user-role">{isSE ? 'Site Engineer' : isPM ? 'Project Manager' : isPO ? 'Procurement Officer' : isAccounts ? 'Accounts Executive' : isSales ? 'Sales Executive' : 'System Administrator'}</span>
-          </div>
+
+          {showNotif && (
+            <div className="notif-dropdown">
+              <div className="notif-header">
+                <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Notifications</span>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {unreadCount > 0 && (
+                    <button
+                      style={{ fontSize: '0.75rem', color: 'var(--color-blue)', background: 'none', border: 'none', cursor: 'pointer' }}
+                      onClick={handleMarkAllRead}
+                    >
+                      Mark all read
+                    </button>
+                  )}
+                  <button className="icon-btn" onClick={() => setShowNotif(false)} style={{ width: 24, height: 24 }}>
+                    <X size={14} />
+                  </button>
+                </div>
+              </div>
+              <div className="notif-list">
+                {state.notifications.slice(0, 10).length === 0 ? (
+                  <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+                    No notifications
+                  </div>
+                ) : state.notifications.slice(0, 10).map(n => (
+                  <div
+                    key={n.id}
+                    className={`notif-item ${!n.read ? 'unread' : ''}`}
+                    onClick={() => { handleMarkRead(n.id); setShowNotif(false); }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                      <span style={{ fontWeight: !n.read ? 600 : 400, fontSize: '0.8rem' }}>{n.title}</span>
+                      {!n.read && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-blue)', flexShrink: 0, marginTop: 4 }} />}
+                    </div>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{n.message}</span>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>{n.date}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        <button 
-          className="icon-btn logout-btn" 
-          onClick={() => {
-            window.location.href = '#/login';
-            window.location.reload();
-          }}
+        {/* User Profile */}
+        <div className="user-profile">
+          <div
+            className="avatar pm-avatar"
+            style={{
+              background: role === 'admin' ? 'var(--color-blue)' :
+                         role === 'pm' ? 'var(--color-teal)' :
+                         role === 'se' ? 'var(--color-slate)' :
+                         role === 'architect' ? 'var(--color-purple)' :
+                         'var(--color-orange)',
+            }}
+          >
+            {user.initials}
+          </div>
+          <div className="user-info">
+            <span className="user-name">{user.name}</span>
+            <span className="user-role">{user.role}</span>
+          </div>
+          <ChevronDown size={14} style={{ color: 'var(--text-secondary)' }} />
+        </div>
+
+        {/* Logout */}
+        <button
+          className="icon-btn"
+          onClick={handleLogout}
           title="Logout"
-          style={{ marginLeft: '8px', color: '#dc2626' }}
+          style={{ color: 'var(--color-red)' }}
         >
-          <LogOut size={20} />
+          <LogOut size={18} />
         </button>
       </div>
     </header>

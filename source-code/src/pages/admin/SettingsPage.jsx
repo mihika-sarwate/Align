@@ -1,196 +1,155 @@
 import React, { useState } from 'react';
+import TabNav from '../../components/TabNav';
 import PageHeader from '../../components/common/PageHeader';
 import './SettingsPage.css';
 
-export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState('General');
+const TABS = [
+  'Organization',
+  'Users & Access',
+  'Project Settings',
+  'Task & Phase Settings',
+  'Procurement',
+  'Finance',
+  'Notifications',
+  'Documents',
+  'Security & Audit',
+  'General'
+];
 
-  const tabs = ['General', 'Notifications', 'Security', 'Integrations'];
+export default function SettingsPage() {
+  const [activeTab, setActiveTab] = useState('Organization');
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
 
   return (
     <>
-      <PageHeader title="Settings" subtitle="System configurations and preferences." />
-      
-      <div className="settings-container">
-        {/* Sidebar for Settings */}
-        <div className="settings-sidebar">
-          <h3 className="settings-sidebar-title">Preferences</h3>
-          <ul className="settings-nav">
-            {tabs.map(tab => (
-              <li 
-                key={tab}
-                className={`settings-nav-item ${activeTab === tab ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </li>
-            ))}
-          </ul>
-        </div>
+      <PageHeader
+        title="Platform & Enterprise Settings"
+        subtitle="Manage company information, RBAC policies, phase definitions, tax configuration, and audit controls."
+      />
+      <TabNav tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* Content Area */}
-        <div className="settings-content">
-          
-          {activeTab === 'General' && (
-            <div className="settings-section">
-              <h3 className="settings-section-title">General Settings</h3>
-              <p className="settings-section-subtitle">Update your company details and global configurations.</p>
-              
-              <form className="settings-form">
-                <div className="form-group">
-                  <label>Company Name</label>
-                  <input type="text" defaultValue="Align Construction Co." />
-                </div>
-                
-                <div className="form-group">
-                  <label>Support Email</label>
-                  <input type="email" defaultValue="admin@align.com" />
-                </div>
-                
-                <div className="form-group">
-                  <label>Timezone</label>
-                  <select defaultValue="ist">
-                    <option value="ist">Asia/Kolkata (IST)</option>
-                    <option value="utc">UTC</option>
-                    <option value="est">Eastern Time (EST)</option>
-                  </select>
-                </div>
+      <div className="card" style={{ padding: '24px', maxWidth: '900px' }}>
+        {saved && (
+          <div style={{ padding: '12px 16px', background: '#dcfce7', color: '#166534', borderRadius: '8px', marginBottom: '20px', fontSize: '0.875rem' }}>
+            Settings saved and persisted successfully.
+          </div>
+        )}
 
-                <div className="form-group">
-                  <label>Currency</label>
-                  <select defaultValue="inr">
-                    <option value="inr">Indian Rupee (₹)</option>
-                    <option value="usd">US Dollar ($)</option>
-                    <option value="eur">Euro (€)</option>
-                  </select>
-                </div>
-                
-                <div className="form-toggle">
-                  <div className="toggle-info">
-                    <h4>Maintenance Mode</h4>
-                    <p>Disable access to the platform for all non-admin users.</p>
-                  </div>
-                  <label className="switch">
-                    <input type="checkbox" />
-                    <span className="slider round"></span>
-                  </label>
-                </div>
-
-                <button type="button" className="btn-save" onClick={() => alert('General Settings Saved!')}>Save Changes</button>
-              </form>
-            </div>
-          )}
-
-          {activeTab === 'Notifications' && (
-            <div className="settings-section">
-              <h3 className="settings-section-title">Notification Preferences</h3>
-              <p className="settings-section-subtitle">Control how and when alerts are sent to users.</p>
-              
-              <div className="settings-form">
-                <div className="form-toggle">
-                  <div className="toggle-info">
-                    <h4>Email Alerts</h4>
-                    <p>Send daily summaries to project managers.</p>
-                  </div>
-                  <label className="switch">
-                    <input type="checkbox" defaultChecked />
-                    <span className="slider round"></span>
-                  </label>
-                </div>
-
-                <div className="form-toggle">
-                  <div className="toggle-info">
-                    <h4>Push Notifications</h4>
-                    <p>Notify engineers instantly on mobile about critical issues.</p>
-                  </div>
-                  <label className="switch">
-                    <input type="checkbox" defaultChecked />
-                    <span className="slider round"></span>
-                  </label>
-                </div>
-
-                <div className="form-toggle">
-                  <div className="toggle-info">
-                    <h4>Inventory Warnings</h4>
-                    <p>Alert procurement team when stock falls below 10%.</p>
-                  </div>
-                  <label className="switch">
-                    <input type="checkbox" defaultChecked />
-                    <span className="slider round"></span>
-                  </label>
-                </div>
-
-                <button type="button" className="btn-save" onClick={() => alert('Notification Settings Saved!')}>Save Preferences</button>
+        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {activeTab === 'Organization' && (
+            <>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Organization Details</h3>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Enterprise Entity Name</label>
+                <input type="text" defaultValue="ALIGN Construction & Real Estate Developers Ltd" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', fontSize: '0.875rem' }} />
               </div>
-            </div>
-          )}
-
-          {activeTab === 'Security' && (
-            <div className="settings-section">
-              <h3 className="settings-section-title">Security & Access</h3>
-              <p className="settings-section-subtitle">Manage password policies and two-factor authentication.</p>
-              
-              <form className="settings-form">
-                <div className="form-toggle">
-                  <div className="toggle-info">
-                    <h4>Require 2FA</h4>
-                    <p>Mandatory two-factor authentication for Admin roles.</p>
-                  </div>
-                  <label className="switch">
-                    <input type="checkbox" defaultChecked />
-                    <span className="slider round"></span>
-                  </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Corporate PAN</label>
+                  <input type="text" defaultValue="AAACA1234F" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', fontSize: '0.875rem' }} />
                 </div>
-
-                <div className="form-group">
-                  <label>Session Timeout (Minutes)</label>
-                  <input type="number" defaultValue={30} />
-                </div>
-                
-                <div className="form-group">
-                  <label>Password Expiry (Days)</label>
-                  <input type="number" defaultValue={90} />
-                </div>
-
-                <button type="button" className="btn-save" onClick={() => alert('Security Settings Saved!')}>Update Security</button>
-              </form>
-            </div>
-          )}
-
-          {activeTab === 'Integrations' && (
-            <div className="settings-section">
-              <h3 className="settings-section-title">Third-Party Integrations</h3>
-              <p className="settings-section-subtitle">Connect ALIGN with your favorite external tools.</p>
-              
-              <div className="integration-cards">
-                <div className="integration-card">
-                  <div className="integration-info">
-                    <h4>Slack</h4>
-                    <p>Push issue alerts directly to Slack channels.</p>
-                  </div>
-                  <button className="btn-connect connected">Connected</button>
-                </div>
-
-                <div className="integration-card">
-                  <div className="integration-info">
-                    <h4>Tally ERP 9</h4>
-                    <p>Sync expenses and purchase orders automatically.</p>
-                  </div>
-                  <button className="btn-connect">Connect</button>
-                </div>
-
-                <div className="integration-card">
-                  <div className="integration-info">
-                    <h4>Google Drive</h4>
-                    <p>Backup documents and blueprints to cloud storage.</p>
-                  </div>
-                  <button className="btn-connect">Connect</button>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Corporate GSTIN</label>
+                  <input type="text" defaultValue="27AAACA1234F1Z5" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', fontSize: '0.875rem' }} />
                 </div>
               </div>
-            </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Registered Office Address</label>
+                <input type="text" defaultValue="Level 14, Tower 3, Equinox Business Park, BKC, Mumbai - 400051" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', fontSize: '0.875rem' }} />
+              </div>
+            </>
           )}
 
-        </div>
+          {activeTab === 'Users & Access' && (
+            <>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Access & Authentication Governance</h3>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Default Session Timeout (Minutes)</label>
+                <input type="number" defaultValue={60} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Enforce Two-Factor Authentication (2FA)</label>
+                <select defaultValue="admin_pm" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                  <option value="all">All Roles</option>
+                  <option value="admin_pm">Admin, PM, and Accounts only</option>
+                  <option value="optional">Optional</option>
+                </select>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'Task & Phase Settings' && (
+            <>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Construction Phase Standardization</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                System-enforced 5 lifecycle phases: PC (Preconstruction), SP (Superstructure I), SS (Superstructure II), BS (Building Services), FS (Fire Safety).
+              </p>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Task Code Format Prefix</label>
+                <input type="text" disabled defaultValue="[Phase 2][Activity 2][Seq 2] e.g. PC0301" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-main)' }} />
+              </div>
+            </>
+          )}
+
+          {activeTab === 'Procurement' && (
+            <>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Procurement Thresholds & Approvals</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>PO Auto-Approval Limit (₹)</label>
+                  <input type="number" defaultValue={100000} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Minimum Vendor RFQ Quotations</label>
+                  <input type="number" defaultValue={3} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }} />
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'Finance' && (
+            <>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Financial & Tax Configuration</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Standard TDS Rate on Contractors (%)</label>
+                  <input type="number" defaultValue={2} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Three-Way Matching Tolerance (₹)</label>
+                  <input type="number" defaultValue={500} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }} />
+                </div>
+              </div>
+            </>
+          )}
+
+          {!['Organization', 'Users & Access', 'Task & Phase Settings', 'Procurement', 'Finance'].includes(activeTab) && (
+            <>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{activeTab} Preferences</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                Configure platform notifications, document watermarks, and immutable audit logs.
+              </p>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>Notification Channels</label>
+                <div style={{ display: 'flex', gap: '16px', fontSize: '0.85rem' }}>
+                  <label><input type="checkbox" defaultChecked /> In-App Notification Bell</label>
+                  <label><input type="checkbox" defaultChecked /> Email Digest</label>
+                  <label><input type="checkbox" /> SMS Escalations</label>
+                </div>
+              </div>
+            </>
+          )}
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+            <button type="submit" className="btn btn-primary" style={{ padding: '10px 24px' }}>Save Settings</button>
+          </div>
+        </form>
       </div>
     </>
   );

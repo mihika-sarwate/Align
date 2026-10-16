@@ -116,3 +116,24 @@
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
+
+.input-icon-right {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.login-hint {
+  background: var(--color-blue-light);
+  border-radius: var(--border-radius-sm);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.78rem;
+  color: #1e40af;
+  margin-top: -0.5rem;
+}
