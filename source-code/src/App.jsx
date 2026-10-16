@@ -162,12 +162,29 @@ function ProtectedRoute({ auth, requiredRole, children }) {
 }
 
 function App() {
-  const [auth, setAuth] = useState(null);
+  const [auth, setAuth] = useState(() => {
+    try {
+      const saved = localStorage.getItem('align_auth');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const handleLogin = (userAuth) => {
+    setAuth(userAuth);
+    try {
+      localStorage.setItem('align_auth', JSON.stringify(userAuth));
+    } catch (e) {
+      console.error('Failed to save auth to localStorage', e);
+    }
+  };
 
   return (
     <AppProvider>
       <Routes>
-        <Route path="/login" element={<Login onLogin={setAuth} />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+
 
         {/* ── ADMIN ─────────────────────────────────── */}
         <Route path="/admin" element={<ProtectedRoute auth={auth} requiredRole="Admin"><AdminLayout role="admin" /></ProtectedRoute>}>

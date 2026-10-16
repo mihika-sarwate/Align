@@ -34,9 +34,15 @@ export default function Header({ role = 'admin' }) {
   };
 
   const handleLogout = () => {
+    try {
+      localStorage.removeItem('align_auth');
+    } catch (e) {
+      console.error(e);
+    }
     navigate('/login');
     window.location.reload();
   };
+
 
   return (
     <header className="header">

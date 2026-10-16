@@ -90,10 +90,11 @@ body.sidebar-collapsed .main-content {
   grid-template-columns: 1fr;
 }
 
-/* Make sure all cards stretch to fill height if needed */
+/* Ensure cards fill cleanly without forcing arbitrary fixed heights */
 .card {
-  height: 100%;
+  min-height: auto;
 }
+
 
 /* Responsive tweaks (optional since focused on desktop) */
 @media (max-width: 1400px) {
