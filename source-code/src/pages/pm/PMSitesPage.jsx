@@ -18,6 +18,8 @@ export default function PMSitesPage() {
 
   const myProjectIds = state.projects.filter(p => p.pm === 'EMP-002' || p.pmName === 'Rahul Mehta').map(p => p.id);
   const mySites = state.sites.filter(s => myProjectIds.includes(s.projectId));
+  const mySiteIds = mySites.map(s => s.id);
+
 
   const handleCreateSite = (e) => {
     e.preventDefault();
@@ -86,10 +88,132 @@ export default function PMSitesPage() {
             <DataTable columns={columns} data={mySites} />
           </div>
         )}
-        {activeTab !== 'Overview' && (
-          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Viewing site {activeTab} across assigned sites ({mySites.map(s => s.id).join(', ')}).
-          </div>
+        {activeTab === 'Tasks' && (
+          <DataTable
+            columns={[
+              { header: 'Task Code', accessor: 'taskCode', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.taskCode}</span> },
+              { header: 'Title', accessor: 'title' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Phase', accessor: 'phase' },
+              { header: 'Engineer', accessor: 'assignedToName' },
+              { header: 'Target End', accessor: 'dueDate' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.tasks.filter(t => mySiteIds.includes(t.siteId))}
+          />
+        )}
+        {activeTab === 'Materials' && (
+          <DataTable
+            columns={[
+              { header: 'Material Code', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material Name', accessor: 'name' },
+              { header: 'Category', accessor: 'category' },
+              { header: 'Unit', accessor: 'unit' },
+              { header: 'Standard Rate', accessor: 'standardRate', cell: r => `₹${r.standardRate || 0}` }
+            ]}
+            data={state.materials}
+          />
+        )}
+        {activeTab === 'Material Requests' && (
+          <DataTable
+            columns={[
+              { header: 'Request ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material', accessor: 'materialName' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Quantity', accessor: 'qty', cell: r => `${r.qty} ${r.unit}` },
+              { header: 'Required By', accessor: 'requiredDate' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.materialRequests.filter(m => mySiteIds.includes(m.siteId))}
+          />
+        )}
+        {activeTab === 'Inventory' && (
+          <DataTable
+            columns={[
+              { header: 'Inventory ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material', accessor: 'materialName' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Usage Phase', accessor: 'usage' },
+              { header: 'Required', accessor: 'qtyRequired', cell: r => `${r.qtyRequired} ${r.unit}` },
+              { header: 'Present', accessor: 'qtyPresent', cell: r => `${r.qtyPresent} ${r.unit}` },
+              { header: 'Health', accessor: 'surplus', cell: r => {
+                const ratio = Math.round((r.qtyPresent / (r.qtyRequired || 1)) * 100);
+                return (
+                  <span style={{
+                    padding: '2px 8px',
+                    borderRadius: '9999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    background: ratio >= 100 ? 'var(--color-green-light)' : ratio >= 71 ? 'var(--color-orange-light)' : 'var(--color-red-light)',
+                    color: ratio >= 100 ? '#166534' : ratio >= 71 ? '#9a3412' : '#991b1b'
+                  }}>
+                    {ratio}%
+                  </span>
+                );
+              }}
+            ]}
+            data={state.inventory.filter(i => mySiteIds.includes(i.siteId))}
+          />
+        )}
+        {activeTab === 'Equipment' && (
+          <DataTable
+            columns={[
+              { header: 'Equipment ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Name', accessor: 'name' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Operational Condition', accessor: 'condition' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.equipmentInventory.filter(e => mySiteIds.includes(e.siteId))}
+          />
+        )}
+        {activeTab === 'Daily Reports' && (
+          <DataTable
+            columns={[
+              { header: 'DPR #', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Date', accessor: 'date' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Work Performed', accessor: 'workPerformed' },
+              { header: 'Labor Count', accessor: 'manpowerCount' }
+            ]}
+            data={state.dailyReports.filter(d => mySiteIds.includes(d.siteId))}
+          />
+        )}
+        {activeTab === 'Issues' && (
+          <DataTable
+            columns={[
+              { header: 'Issue ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Title', accessor: 'title' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Category', accessor: 'category' },
+              { header: 'Priority', accessor: 'priority' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.issues.filter(i => mySiteIds.includes(i.siteId))}
+          />
+        )}
+        {activeTab === 'Documents' && (
+          <DataTable
+            columns={[
+              { header: 'Document Name', accessor: 'name' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Category', accessor: 'category' },
+              { header: 'Upload Date', accessor: 'uploadDate' }
+            ]}
+            data={state.documents.filter(d => mySiteIds.includes(d.siteId))}
+          />
+        )}
+        {activeTab === 'Activity' && (
+          <DataTable
+            columns={[
+              { header: 'Timestamp', accessor: 'timestamp', cell: r => <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{r.timestamp}</span> },
+              { header: 'User', accessor: 'userName', cell: r => <span style={{ fontWeight: 600 }}>{r.userName}</span> },
+              { header: 'Action', accessor: 'action', cell: r => <span style={{ color: 'var(--color-blue)', fontWeight: 600 }}>{r.action}</span> },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Details', accessor: 'description' }
+            ]}
+            data={state.activity.filter(a => mySiteIds.includes(a.siteId))}
+          />
         )}
       </div>
 

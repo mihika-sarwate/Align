@@ -7,7 +7,11 @@ const tabNavStyle = {
   marginBottom: '20px',
   overflowX: 'auto',
   flexWrap: 'nowrap',
+  WebkitOverflowScrolling: 'touch',
+  scrollbarWidth: 'thin',
+  paddingBottom: '2px',
 };
+
 
 const tabStyle = (active) => ({
   padding: '10px 18px',

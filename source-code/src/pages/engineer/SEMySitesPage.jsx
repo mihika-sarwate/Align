@@ -49,10 +49,144 @@ export default function SEMySitesPage() {
             />
           </div>
         )}
-        {activeTab !== 'Overview' && (
-          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Showing {activeTab} for site {mySite.name}.
-          </div>
+        {activeTab === 'Tasks' && (
+          <DataTable
+            columns={[
+              { header: 'Task Code', accessor: 'taskCode', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.taskCode}</span> },
+              { header: 'Title', accessor: 'title' },
+              { header: 'Planned Qty', accessor: 'plannedQty', cell: r => `${r.plannedQty} ${r.unit}` },
+              { header: 'Actual Qty', accessor: 'actualQty', cell: r => `${r.actualQty || 0} ${r.unit}` },
+              { header: 'Target End', accessor: 'dueDate' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={myTasks}
+          />
+        )}
+        {activeTab === 'Materials' && (
+          <DataTable
+            columns={[
+              { header: 'Material Code', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Name', accessor: 'name' },
+              { header: 'Category', accessor: 'category' },
+              { header: 'Unit', accessor: 'unit' },
+              { header: 'Standard Rate', accessor: 'standardRate', cell: r => `₹${r.standardRate || 0}` }
+            ]}
+            data={state.materials}
+          />
+        )}
+        {activeTab === 'Inventory' && (
+          <DataTable
+            columns={[
+              { header: 'Inventory ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material', accessor: 'materialName' },
+              { header: 'Usage Phase', accessor: 'usage' },
+              { header: 'Required', accessor: 'qtyRequired', cell: r => `${r.qtyRequired} ${r.unit}` },
+              { header: 'Present on Site', accessor: 'qtyPresent', cell: r => `${r.qtyPresent} ${r.unit}` },
+              { header: 'Stock Status', accessor: 'surplus', cell: r => {
+                const ratio = Math.round((r.qtyPresent / (r.qtyRequired || 1)) * 100);
+                return (
+                  <span style={{
+                    padding: '2px 8px',
+                    borderRadius: '9999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    background: ratio >= 100 ? 'var(--color-green-light)' : ratio >= 71 ? 'var(--color-orange-light)' : 'var(--color-red-light)',
+                    color: ratio >= 100 ? '#166534' : ratio >= 71 ? '#9a3412' : '#991b1b'
+                  }}>
+                    {ratio}%
+                  </span>
+                );
+              }}
+            ]}
+            data={state.inventory.filter(i => i.siteId === mySite.id)}
+          />
+        )}
+        {activeTab === 'Equipment' && (
+          <DataTable
+            columns={[
+              { header: 'Equipment ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Name', accessor: 'name' },
+              { header: 'Operational Condition', accessor: 'condition' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.equipmentInventory.filter(e => e.siteId === mySite.id)}
+          />
+        )}
+        {activeTab === 'Receipts' && (
+          <DataTable
+            columns={[
+              { header: 'GRN Number', accessor: 'receiptNumber', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.receiptNumber}</span> },
+              { header: 'PO Ref', accessor: 'poId' },
+              { header: 'Accepted Qty', accessor: 'acceptedQty', cell: r => `${r.acceptedQty} ${r.unit}` },
+              { header: 'Rejected Qty', accessor: 'rejectedQty', cell: r => `${r.rejectedQty} ${r.unit}` },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.receipts.filter(rc => rc.siteId === mySite.id)}
+          />
+        )}
+        {activeTab === 'Progress' && (
+          <DataTable
+            columns={[
+              { header: 'Site Task', accessor: 'title' },
+              { header: 'Phase', accessor: 'phase' },
+              { header: 'Completion Ratio', accessor: 'actualQty', cell: r => {
+                const pct = Math.min(100, Math.round(((r.actualQty || 0) / (r.plannedQty || 1)) * 100));
+                return (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ flex: 1, height: '6px', background: '#e5e7eb', borderRadius: '3px' }}>
+                      <div style={{ height: '100%', background: 'var(--color-teal)', borderRadius: '3px', width: `${pct}%` }}></div>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{pct}%</span>
+                  </div>
+                );
+              }},
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={myTasks}
+          />
+        )}
+        {activeTab === 'Daily Reports' && (
+          <DataTable
+            columns={[
+              { header: 'DPR #', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Date', accessor: 'date' },
+              { header: 'Work Log', accessor: 'workPerformed' },
+              { header: 'Workers Present', accessor: 'manpowerCount' }
+            ]}
+            data={state.dailyReports.filter(d => d.siteId === mySite.id)}
+          />
+        )}
+        {activeTab === 'Issues' && (
+          <DataTable
+            columns={[
+              { header: 'Issue ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Title', accessor: 'title' },
+              { header: 'Priority', accessor: 'priority' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.issues.filter(i => i.siteId === mySite.id)}
+          />
+        )}
+        {activeTab === 'Documents' && (
+          <DataTable
+            columns={[
+              { header: 'Document', accessor: 'name' },
+              { header: 'Category', accessor: 'category' },
+              { header: 'Date', accessor: 'uploadDate' }
+            ]}
+            data={state.documents.filter(d => d.siteId === mySite.id)}
+          />
+        )}
+        {activeTab === 'History' && (
+          <DataTable
+            columns={[
+              { header: 'Timestamp', accessor: 'timestamp', cell: r => <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{r.timestamp}</span> },
+              { header: 'User', accessor: 'userName' },
+              { header: 'Action', accessor: 'action', cell: r => <span style={{ color: 'var(--color-blue)', fontWeight: 600 }}>{r.action}</span> },
+              { header: 'Details', accessor: 'description' }
+            ]}
+            data={state.activity.filter(a => a.siteId === mySite.id)}
+          />
         )}
       </div>
     </>

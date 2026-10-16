@@ -172,11 +172,56 @@ export default function ProjectsPage() {
           />
         )}
 
-        {!['Overview', 'Sites', 'Tasks', 'Project Phases', 'Budget & Expenses', 'Issues', 'Documents'].includes(activeTab) && (
-          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Showing {activeTab} across all company projects.
-          </div>
+        {activeTab === 'Progress' && (
+          <DataTable
+            columns={[
+              { header: 'Project ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Project Name', accessor: 'name', cell: r => <span style={{ fontWeight: 600 }}>{r.name}</span> },
+              { header: 'Project Manager', accessor: 'pmName' },
+              { header: 'Timeline', accessor: 'startDate', cell: r => `${r.startDate} to ${r.endDate}` },
+              { header: 'Overall Progress', accessor: 'progress', cell: r => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ flex: 1, height: '6px', background: '#e5e7eb', borderRadius: '3px' }}>
+                    <div style={{ height: '100%', background: 'var(--color-blue)', borderRadius: '3px', width: `${r.progress}%` }}></div>
+                  </div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{r.progress}%</span>
+                </div>
+              )},
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={filtered}
+          />
         )}
+
+        {activeTab === 'Materials & Purchases' && (
+          <DataTable
+            columns={[
+              { header: 'PO Number', accessor: 'poNumber', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.poNumber}</span> },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Vendor', accessor: 'vendorName' },
+              { header: 'Items Ordered', accessor: 'items', cell: r => r.items?.map(i => `${i.materialName} (${i.qty} ${i.unit})`).join(', ') || 'N/A' },
+              { header: 'Total Value', accessor: 'totalAmount', cell: r => `₹${(r.totalAmount || 0).toLocaleString('en-IN')}` },
+              { header: 'Expected Delivery', accessor: 'expectedDelivery' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.purchaseOrders}
+          />
+        )}
+
+        {activeTab === 'Activity' && (
+          <DataTable
+            columns={[
+              { header: 'Timestamp', accessor: 'timestamp', cell: r => <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{r.timestamp}</span> },
+              { header: 'User', accessor: 'userName', cell: r => <span style={{ fontWeight: 600 }}>{r.userName}</span> },
+              { header: 'Role', accessor: 'userRole' },
+              { header: 'Action', accessor: 'action', cell: r => <span style={{ color: 'var(--color-blue)', fontWeight: 600 }}>{r.action}</span> },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Details', accessor: 'description' }
+            ]}
+            data={state.activity}
+          />
+        )}
+
       </div>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Create New Development Project">

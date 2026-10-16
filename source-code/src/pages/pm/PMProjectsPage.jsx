@@ -99,11 +99,108 @@ export default function PMProjectsPage() {
             data={myDocs}
           />
         )}
-        {!['Overview', 'Sites', 'Tasks', 'Phases', 'Issues', 'Documents'].includes(activeTab) && (
-          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Showing {activeTab} data for assigned projects ({myProjectIds.join(', ')}).
-          </div>
+        {activeTab === 'Weekly Targets' && (
+          <DataTable
+            columns={[
+              { header: 'Target ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Week', accessor: 'week' },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Target Description', accessor: 'target' },
+              { header: 'Planned Qty', accessor: 'plannedQty', cell: r => `${r.plannedQty} ${r.unit}` },
+              { header: 'Actual Qty', accessor: 'actualQty', cell: r => `${r.actualQty} ${r.unit}` },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.weeklyTargets.filter(w => myProjectIds.includes(w.projectId))}
+          />
         )}
+        {activeTab === 'Progress' && (
+          <DataTable
+            columns={[
+              { header: 'Project ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Project Name', accessor: 'name' },
+              { header: 'Timeline', accessor: 'startDate', cell: r => `${r.startDate} to ${r.endDate}` },
+              { header: 'Execution Progress', accessor: 'progress', cell: r => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ flex: 1, height: '6px', background: '#e5e7eb', borderRadius: '3px' }}>
+                    <div style={{ height: '100%', background: 'var(--color-blue)', borderRadius: '3px', width: `${r.progress}%` }}></div>
+                  </div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{r.progress}%</span>
+                </div>
+              )},
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={myProjects}
+          />
+        )}
+        {activeTab === 'Materials' && (
+          <DataTable
+            columns={[
+              { header: 'Request ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material', accessor: 'materialName' },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Quantity', accessor: 'qty', cell: r => `${r.qty} ${r.unit}` },
+              { header: 'Required Date', accessor: 'requiredDate' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.materialRequests.filter(m => myProjectIds.includes(m.projectId))}
+          />
+        )}
+        {activeTab === 'Inventory' && (
+          <DataTable
+            columns={[
+              { header: 'Inventory ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material', accessor: 'materialName' },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Required', accessor: 'qtyRequired', cell: r => `${r.qtyRequired} ${r.unit}` },
+              { header: 'Present', accessor: 'qtyPresent', cell: r => `${r.qtyPresent} ${r.unit}` },
+              { header: 'Health', accessor: 'surplus', cell: r => {
+                const ratio = Math.round((r.qtyPresent / (r.qtyRequired || 1)) * 100);
+                return (
+                  <span style={{
+                    padding: '2px 8px',
+                    borderRadius: '9999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    background: ratio >= 100 ? 'var(--color-green-light)' : ratio >= 71 ? 'var(--color-orange-light)' : 'var(--color-red-light)',
+                    color: ratio >= 100 ? '#166534' : ratio >= 71 ? '#9a3412' : '#991b1b'
+                  }}>
+                    {ratio}%
+                  </span>
+                );
+              }}
+            ]}
+            data={state.inventory.filter(i => myProjectIds.includes(i.projectId))}
+          />
+        )}
+        {activeTab === 'Expenses' && (
+          <DataTable
+            columns={[
+              { header: 'Expense ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Date', accessor: 'date' },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Category', accessor: 'category' },
+              { header: 'Description', accessor: 'description' },
+              { header: 'Amount', accessor: 'amount', cell: r => `₹${(r.amount || 0).toLocaleString('en-IN')}` },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.expenses.filter(e => myProjectIds.includes(e.projectId))}
+          />
+        )}
+        {activeTab === 'Activity' && (
+          <DataTable
+            columns={[
+              { header: 'Timestamp', accessor: 'timestamp', cell: r => <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{r.timestamp}</span> },
+              { header: 'User', accessor: 'userName', cell: r => <span style={{ fontWeight: 600 }}>{r.userName}</span> },
+              { header: 'Action', accessor: 'action', cell: r => <span style={{ color: 'var(--color-blue)', fontWeight: 600 }}>{r.action}</span> },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Details', accessor: 'description' }
+            ]}
+            data={state.activity.filter(a => myProjectIds.includes(a.projectId))}
+          />
+        )}
+
       </div>
     </>
   );

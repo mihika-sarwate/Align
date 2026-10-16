@@ -155,11 +155,81 @@ export default function PurchasesPage() {
           />
         )}
 
-        {!['Material Requests', 'Purchase Orders', 'Deliveries', 'Material Receipts', 'Invoices', 'Payments'].includes(activeTab) && (
-          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Showing {activeTab} data for active procurement pipelines.
-          </div>
+        {activeTab === 'Pending Approvals' && (
+          <DataTable
+            columns={[
+              { header: 'Request ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material', accessor: 'materialName' },
+              { header: 'Quantity', accessor: 'qty', cell: r => `${r.qty} ${r.unit}` },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Required By', accessor: 'requiredDate' },
+              { header: 'Submitted By', accessor: 'submittedByName' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.materialRequests.filter(r => r.status === 'Pending')}
+          />
         )}
+
+        {activeTab === 'Enquiries / RFQs' && (
+          <DataTable
+            columns={[
+              { header: 'RFQ ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Title', accessor: 'title' },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Vendors Invited', accessor: 'vendors', cell: r => r.vendors?.length ? `${r.vendors.length} Vendors` : 'All Vendors' },
+              { header: 'Submission Deadline', accessor: 'dueDate' },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.rfqs}
+          />
+        )}
+
+        {activeTab === 'Quotation Comparisons' && (
+          <DataTable
+            columns={[
+              { header: 'Quotation ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Vendor', accessor: 'vendorName' },
+              { header: 'Linked RFQ', accessor: 'rfqId' },
+              { header: 'Unit Rate', accessor: 'unitRate', cell: r => `₹${r.unitRate || 0}` },
+              { header: 'Total Value', accessor: 'totalAmount', cell: r => `₹${(r.totalAmount || 0).toLocaleString('en-IN')}` },
+              { header: 'Delivery Lead Time', accessor: 'deliveryDays', cell: r => `${r.deliveryDays || 3} days` },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.quotations}
+          />
+        )}
+
+        {activeTab === 'Verification' && (
+          <DataTable
+            columns={[
+              { header: 'GRN Number', accessor: 'receiptNumber', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.receiptNumber}</span> },
+              { header: 'PO Ref', accessor: 'poId' },
+              { header: 'Site', accessor: 'siteId' },
+              { header: 'Received Qty', accessor: 'receivedQty', cell: r => `${r.receivedQty} ${r.unit}` },
+              { header: 'Accepted Qty', accessor: 'acceptedQty', cell: r => `${r.acceptedQty} ${r.unit}` },
+              { header: 'Rejected Qty', accessor: 'rejectedQty', cell: r => `${r.rejectedQty} ${r.unit}` },
+              { header: 'Inspection Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.receipts}
+          />
+        )}
+
+        {activeTab === 'Purchase Reports' && (
+          <DataTable
+            columns={[
+              { header: 'PO Number', accessor: 'poNumber', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.poNumber}</span> },
+              { header: 'Vendor', accessor: 'vendorName' },
+              { header: 'Project', accessor: 'projectId' },
+              { header: 'Order Value', accessor: 'totalAmount', cell: r => `₹${(r.totalAmount || 0).toLocaleString('en-IN')}` },
+              { header: 'Expected Date', accessor: 'expectedDelivery' },
+              { header: 'Order Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.purchaseOrders}
+          />
+        )}
+
       </div>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Issue Direct Purchase Order">

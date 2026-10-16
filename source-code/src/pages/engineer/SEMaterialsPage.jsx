@@ -50,10 +50,68 @@ export default function SEMaterialsPage() {
             data={myRequests}
           />
         )}
-        {activeTab !== 'My Material Requests' && (
-          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Showing {activeTab} for site SIT-201.
-          </div>
+        {activeTab === 'Material Catalogue' && (
+          <DataTable
+            columns={[
+              { header: 'Material Code', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material Name', accessor: 'name' },
+              { header: 'Category', accessor: 'category' },
+              { header: 'Unit', accessor: 'unit' },
+              { header: 'Standard Rate', accessor: 'standardRate', cell: r => `₹${r.standardRate || 0}` }
+            ]}
+            data={state.materials}
+          />
+        )}
+        {activeTab === 'Incoming Deliveries' && (
+          <DataTable
+            columns={[
+              { header: 'Delivery ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'PO Ref', accessor: 'poId' },
+              { header: 'Vendor', accessor: 'vendorName' },
+              { header: 'Expected Date', accessor: 'expectedDate' },
+              { header: 'Delivery Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.deliveries.filter(d => d.siteId === 'SIT-201')}
+          />
+        )}
+        {activeTab === 'Material Receipts' && (
+          <DataTable
+            columns={[
+              { header: 'GRN Number', accessor: 'receiptNumber', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.receiptNumber}</span> },
+              { header: 'PO Ref', accessor: 'poId' },
+              { header: 'Accepted Qty', accessor: 'acceptedQty', cell: r => `${r.acceptedQty} ${r.unit}` },
+              { header: 'Rejected Qty', accessor: 'rejectedQty', cell: r => `${r.rejectedQty} ${r.unit}` },
+              { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
+            ]}
+            data={state.receipts.filter(rc => rc.siteId === 'SIT-201')}
+          />
+        )}
+        {activeTab === 'Stock at My Sites' && (
+          <DataTable
+            columns={[
+              { header: 'Inventory ID', accessor: 'id', cell: r => <span style={{ fontWeight: 600, color: 'var(--color-blue)' }}>{r.id}</span> },
+              { header: 'Material', accessor: 'materialName' },
+              { header: 'Usage Phase', accessor: 'usage' },
+              { header: 'Required', accessor: 'qtyRequired', cell: r => `${r.qtyRequired} ${r.unit}` },
+              { header: 'Present on Site', accessor: 'qtyPresent', cell: r => `${r.qtyPresent} ${r.unit}` },
+              { header: 'Stock Health', accessor: 'surplus', cell: r => {
+                const ratio = Math.round((r.qtyPresent / (r.qtyRequired || 1)) * 100);
+                return (
+                  <span style={{
+                    padding: '2px 8px',
+                    borderRadius: '9999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    background: ratio >= 100 ? 'var(--color-green-light)' : ratio >= 71 ? 'var(--color-orange-light)' : 'var(--color-red-light)',
+                    color: ratio >= 100 ? '#166534' : ratio >= 71 ? '#9a3412' : '#991b1b'
+                  }}>
+                    {ratio}%
+                  </span>
+                );
+              }}
+            ]}
+            data={state.inventory.filter(i => i.siteId === 'SIT-201')}
+          />
         )}
       </div>
 

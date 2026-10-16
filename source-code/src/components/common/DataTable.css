@@ -4,31 +4,54 @@
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+}
+
+/* Custom sleek scrollbar for tables */
+.data-table-container::-webkit-scrollbar {
+  height: 8px;
+}
+.data-table-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.data-table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.data-table-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .data-table {
   width: 100%;
+  min-width: 820px;
   border-collapse: collapse;
   text-align: left;
 }
 
 .data-table th {
-  padding: 16px;
+  padding: 14px 16px;
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 1px solid var(--border-color);
-  background: #f9fafb;
+  background: #f8fafc;
+  white-space: nowrap;
 }
 
 .data-table td {
-  padding: 16px;
-  font-size: 0.875rem;
+  padding: 14px 16px;
+  font-size: 0.85rem;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
+  line-height: 1.4;
 }
 
 .data-table tr:last-child td {
@@ -40,8 +63,14 @@
 }
 
 .actions-header, .actions-cell {
-  width: 60px;
-  text-align: center;
+  min-width: 110px;
+  width: auto;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.actions-cell {
+  padding-right: 18px;
 }
 
 .action-btn {
@@ -49,11 +78,12 @@
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
   border-radius: 4px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.15s ease;
 }
 
 .action-btn:hover {
@@ -67,3 +97,4 @@
   color: var(--text-secondary);
   font-style: italic;
 }
+
