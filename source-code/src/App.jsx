@@ -113,27 +113,6 @@ import SalesDocumentsPage from './pages/sales/SalesDocumentsPage';
 import SalesActivityPage from './pages/sales/SalesActivityPage';
 import ProfilePage from './pages/shared/ProfilePage';
 
-// Simple client-side auth state from localStorage
-function getStoredAuth() {
-  try {
-    const raw = localStorage.getItem('align_auth');
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-// Protected route wrapper
-function ProtectedRoute({ children, requiredRole, auth }) {
-  if (!auth) {
-    return <Navigate to="/login" replace />;
-  }
-  if (requiredRole && auth.role !== requiredRole && auth.role !== 'Admin') {
-    return <Navigate to={ROLE_PATH[auth.role] || '/login'} replace />;
-  }
-  return children;
-}
-
 const ROLE_PATH = {
   'Admin': '/admin',
   'Project Manager': '/pm',
@@ -142,6 +121,34 @@ const ROLE_PATH = {
   'Accounts': '/accounts',
   'Sales Executive': '/sales',
 };
+
+// Simple client-side auth state from localStorage with validation
+function getStoredAuth() {
+  try {
+    const raw = localStorage.getItem('align_auth');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !parsed.role || !ROLE_PATH[parsed.role]) {
+      // Clear legacy/invalid auth roles such as Contractor or Architect
+      localStorage.removeItem('align_auth');
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+// Protected route wrapper
+function ProtectedRoute({ children, requiredRole, auth }) {
+  if (!auth || !auth.role || !ROLE_PATH[auth.role]) {
+    return <Navigate to="/login" replace />;
+  }
+  if (requiredRole && auth.role !== requiredRole && auth.role !== 'Admin') {
+    return <Navigate to={ROLE_PATH[auth.role] || '/login'} replace />;
+  }
+  return children;
+}
 
 function App() {
   const [auth, setAuth] = useState(getStoredAuth);

@@ -5,12 +5,14 @@ import { useApp } from '../store/AppContext';
 import './Header.css';
 
 const roleUserMap = {
-  admin:     { initials: 'AS', name: 'Arjun Sharma',       role: 'System Administrator' },
-  pm:        { initials: 'RM', name: 'Rahul Mehta',        role: 'Project Manager' },
-  se:        { initials: 'RK', name: 'Rajesh K',           role: 'Site Engineer' },
-  po:        { initials: 'PR', name: 'Priya Rao',          role: 'Procurement Officer' },
-  accounts:  { initials: 'AC', name: 'Anjali Chauhan',     role: 'Accounts' },
-  sales:     { initials: 'RS', name: 'Riya Sharma',        role: 'Sales Executive' },
+  admin:        { initials: 'AS', name: 'Arjun Sharma',       role: 'System Administrator' },
+  pm:           { initials: 'RM', name: 'Rahul Mehta',        role: 'Project Manager' },
+  engineer:     { initials: 'RK', name: 'Rajesh K',           role: 'Site Engineer' },
+  se:           { initials: 'RK', name: 'Rajesh K',           role: 'Site Engineer' },
+  procurement:  { initials: 'PR', name: 'Priya Rao',          role: 'Procurement Officer' },
+  po:           { initials: 'PR', name: 'Priya Rao',          role: 'Procurement Officer' },
+  accounts:     { initials: 'AC', name: 'Anjali Chauhan',     role: 'Accounts' },
+  sales:        { initials: 'RS', name: 'Riya Sharma',        role: 'Sales Executive' },
 };
 
 export default function Header({ role = 'admin' }) {
