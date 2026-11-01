@@ -7,7 +7,8 @@ import {
   demoDocuments, demoDrawings, demoSiteQueries, demoClients, demoLeads,
   demoSalesQuotations, demoBookings, demoAgreements, demoPaymentSchedules,
   demoReceivables, demoDailyReports, demoNotifications, demoActivity,
-  demoPhases, demoPhaseActivities, demoWeeklyTargets, demoGlossary,
+  demoPhases, demoPhaseActivities, demoWeeklyTargets,
+  demoContractors, demoQualityInspections, demoLBMSRecords,
   demoWorkAssignments, demoLabourLogs,
 } from './demoData';
 
@@ -37,6 +38,9 @@ const initialState = {
   drawings: demoDrawings,
   siteQueries: demoSiteQueries,
   clients: demoClients,
+  contractors: demoContractors,
+  qualityInspections: demoQualityInspections,
+  lbmsRecords: demoLBMSRecords,
   leads: demoLeads,
   salesQuotations: demoSalesQuotations,
   bookings: demoBookings,
@@ -49,7 +53,6 @@ const initialState = {
   phases: demoPhases,
   phaseActivities: demoPhaseActivities,
   weeklyTargets: demoWeeklyTargets,
-  glossary: demoGlossary,
   workAssignments: demoWorkAssignments,
   labourLogs: demoLabourLogs,
 };
@@ -456,6 +459,59 @@ function reducer(state, action) {
     }
     case 'UPDATE_WORK_ASSIGNMENT': {
       return { ...state, workAssignments: state.workAssignments.map(w => w.id === action.payload.id ? { ...w, ...action.payload } : w) };
+    }
+
+    // ——— CONTRACTORS (Admin Management) ———
+    case 'CREATE_CONTRACTOR': {
+      const con = { ...action.payload, id: genId('CON'), status: action.payload.status || 'Active' };
+      return { ...state, contractors: [con, ...(state.contractors || [])] };
+    }
+    case 'UPDATE_CONTRACTOR': {
+      return {
+        ...state,
+        contractors: (state.contractors || []).map(c => c.id === action.payload.id ? { ...c, ...action.payload } : c)
+      };
+    }
+
+    // ——— LBMS PRODUCTIVITY CONTROL ———
+    case 'CREATE_LBMS_RECORD': {
+      const rec = { ...action.payload, id: genId('LBMS') };
+      return { ...state, lbmsRecords: [rec, ...(state.lbmsRecords || [])] };
+    }
+    case 'UPDATE_LBMS_RECORD': {
+      return {
+        ...state,
+        lbmsRecords: (state.lbmsRecords || []).map(r => r.id === action.payload.id ? { ...r, ...action.payload } : r)
+      };
+    }
+
+    // ——— QUALITY INSPECTIONS & DELIVERY PROOFS ———
+    case 'CREATE_QUALITY_INSPECTION': {
+      const qi = { ...action.payload, id: genId('QI') };
+      return { ...state, qualityInspections: [qi, ...(state.qualityInspections || [])] };
+    }
+    case 'UPDATE_QUALITY_INSPECTION': {
+      return {
+        ...state,
+        qualityInspections: (state.qualityInspections || []).map(q => q.id === action.payload.id ? { ...q, ...action.payload } : q)
+      };
+    }
+    case 'ADD_DELIVERY_PROOF': {
+      const { inspectionId, photo, receiptAttached } = action.payload;
+      return {
+        ...state,
+        qualityInspections: (state.qualityInspections || []).map(q => {
+          if (q.id === inspectionId) {
+            const photos = photo ? [...(q.photos || []), photo] : (q.photos || []);
+            return {
+              ...q,
+              photos,
+              receiptsAttached: receiptAttached !== undefined ? receiptAttached : q.receiptsAttached
+            };
+          }
+          return q;
+        })
+      };
     }
 
     default:

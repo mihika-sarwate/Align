@@ -13,14 +13,12 @@ const TABS = [
 ];
 
 const ROLES_INFO = [
-  { role: 'Admin', count: 1, access: 'Full Enterprise Visibility', desc: 'Owner-level overseer with organization-wide permissions across all projects, finances, and settings.' },
-  { role: 'Project Manager', count: 3, access: 'Assigned Projects', desc: 'Project lifecycle oversight, task assignment, contractor supervision, and milestone verification.' },
-  { role: 'Site Engineer', count: 3, access: 'Assigned Sites', desc: 'On-site execution logging, DPR filings, material requisitioning, and Goods Receipt Note verification.' },
-  { role: 'Procurement Officer', count: 1, access: 'Enterprise Procurement', desc: 'Vendor management, RFQ tenders, quotation comparisons, and PO issuance.' },
-  { role: 'Accounts', count: 1, access: 'Enterprise Finance', desc: 'Three-way invoice matching (PO/GRN), vendor disbursement scheduling, and ledger reconciliations.' },
-  { role: 'Architect', count: 1, access: 'Assigned Projects', desc: 'Design briefs, technical drawing release, versioned revisions, and RFI clarifications.' },
-  { role: 'Contractor', count: 1, access: 'Assigned Work Packages', desc: 'Labor crew muster, work package physical output updates, and site roadblock reporting.' },
-  { role: 'Sales Executive', count: 1, access: 'CRM & Allotments', desc: 'Prospective buyer pipeline, sales quotes, unit booking token agreements, and payment collections.' }
+  { role: 'Admin', count: 1, access: 'Full Enterprise Visibility', desc: 'Owner-level overseer with organization-wide permissions across all projects, contractors, and operations.' },
+  { role: 'Project Manager', count: 3, access: 'Assigned Projects', desc: 'Project lifecycle oversight, task allocation, verification, reports, and relevant inventory. No fiscal access.' },
+  { role: 'Site Engineer', count: 3, access: 'Assigned Sites', desc: 'On-site execution logging, DPR filings, task management, material requisitioning, and receipts.' },
+  { role: 'Procurement Officer', count: 1, access: 'Enterprise Procurement', desc: 'Vendor management, RFQ tenders, quotation comparisons, PO issuance, quality inspections, and proofs.' },
+  { role: 'Accounts', count: 1, access: 'Enterprise Finance', desc: 'Three-way invoice matching (PO/GRN), vendor disbursements, sales summary, and inventory visibility.' },
+  { role: 'Sales Executive', count: 1, access: 'CRM & Allotments', desc: 'Prospective buyer pipeline, sales quotes, unit booking token agreements, and project completion overview.' }
 ];
 
 const MATRIX = [
@@ -29,8 +27,6 @@ const MATRIX = [
   { role: 'Site Engineer', view: true, create: true, edit: true, delete: false, approve: false, reject: false, verify: true, export: false },
   { role: 'Procurement Officer', view: true, create: true, edit: true, delete: false, approve: true, reject: true, verify: false, export: true },
   { role: 'Accounts', view: true, create: true, edit: true, delete: false, approve: true, reject: true, verify: true, export: true },
-  { role: 'Architect', view: true, create: true, edit: true, delete: false, approve: true, reject: true, verify: false, export: true },
-  { role: 'Contractor', view: true, create: false, edit: true, delete: false, approve: false, reject: false, verify: false, export: false },
   { role: 'Sales Executive', view: true, create: true, edit: true, delete: false, approve: false, reject: false, verify: false, export: true }
 ];
 
@@ -42,7 +38,7 @@ export default function RolesPage() {
     <>
       <PageHeader
         title="Roles & Access Control"
-        subtitle="Role-Based Access Control (RBAC) governance for all 8 construction and real estate platform roles."
+        subtitle="Role-Based Access Control (RBAC) governance for all 6 active construction management roles."
       />
       <TabNav tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
 
@@ -107,7 +103,7 @@ export default function RolesPage() {
               { header: 'Assigned Projects', accessor: 'projects', cell: r => (r.projects || []).join(', ') || 'Global' },
               { header: 'Status', accessor: 'status', cell: r => <StatusBadge status={r.status} /> }
             ]}
-            data={state.employees}
+            data={state.employees.filter(e => e.role !== 'Architect' && e.role !== 'Contractor')}
           />
         )}
 

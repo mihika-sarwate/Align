@@ -17,7 +17,6 @@ import TasksPage from './pages/admin/TasksPage';
 import MaterialsPage from './pages/admin/MaterialsPage';
 import InventoryPage from './pages/admin/InventoryPage';
 import PurchasesPage from './pages/admin/PurchasesPage';
-import ExpensesPage from './pages/admin/ExpensesPage';
 import ProgressPage from './pages/admin/ProgressPage';
 import IssuesPage from './pages/admin/IssuesPage';
 import DocumentsPage from './pages/admin/DocumentsPage';
@@ -25,9 +24,8 @@ import ActivityPage from './pages/admin/ActivityPage';
 import EmployeesPage from './pages/admin/EmployeesPage';
 import RolesPage from './pages/admin/RolesPage';
 import VendorsPage from './pages/admin/VendorsPage';
-import ClientsPage from './pages/admin/ClientsPage';
+import ContractorsPage from './pages/admin/ContractorsPage';
 import SettingsPage from './pages/admin/SettingsPage';
-import GlossaryPage from './pages/admin/GlossaryPage';
 
 // PM pages
 import PMDashboard from './pages/pm/PMDashboard';
@@ -38,10 +36,7 @@ import PMPhasesPage from './pages/pm/PMPhasesPage';
 import PMMaterialsPage from './pages/pm/PMMaterialsPage';
 import PMInventoryPage from './pages/pm/PMInventoryPage';
 import PMMaterialRequestsPage from './pages/pm/PMMaterialRequestsPage';
-import PMPurchasesPage from './pages/pm/PMPurchasesPage';
-import PMExpensesPage from './pages/pm/PMExpensesPage';
 import PMProgressPage from './pages/pm/PMProgressPage';
-import PMDailyReportsPage from './pages/pm/PMDailyReportsPage';
 import PMIssuesPage from './pages/pm/PMIssuesPage';
 import PMDocumentsPage from './pages/pm/PMDocumentsPage';
 import PMReportsPage from './pages/pm/PMReportsPage';
@@ -73,6 +68,7 @@ import PORFQsPage from './pages/procurement/PORFQsPage';
 import POQuotationsPage from './pages/procurement/POQuotationsPage';
 import POPurchaseOrdersPage from './pages/procurement/POPurchaseOrdersPage';
 import PODeliveriesPage from './pages/procurement/PODeliveriesPage';
+import POQualityInspectionPage from './pages/procurement/POQualityInspectionPage';
 import POReceiptsPage from './pages/procurement/POReceiptsPage';
 import POInventoryPage from './pages/procurement/POInventoryPage';
 import POEquipmentPage from './pages/procurement/POEquipmentPage';
@@ -87,6 +83,7 @@ import POActivityPage from './pages/procurement/POActivityPage';
 import AccountsDashboard from './pages/accounts/AccountsDashboard';
 import AccountsPOPage from './pages/accounts/AccountsPOPage';
 import AccountsReceiptsPage from './pages/accounts/AccountsReceiptsPage';
+import AccountsInventoryPage from './pages/accounts/AccountsInventoryPage';
 import AccountsInvoicesPage from './pages/accounts/AccountsInvoicesPage';
 import AccountsInvoiceVerificationPage from './pages/accounts/AccountsInvoiceVerificationPage';
 import AccountsPaymentsPage from './pages/accounts/AccountsPaymentsPage';
@@ -101,33 +98,6 @@ import AccountsReconciliationPage from './pages/accounts/AccountsReconciliationP
 import AccountsDocumentsPage from './pages/accounts/AccountsDocumentsPage';
 import AccountsActivityPage from './pages/accounts/AccountsActivityPage';
 
-// Architect pages
-import ArchitectDashboard from './pages/architect/ArchitectDashboard';
-import ArchitectProjectsPage from './pages/architect/ArchitectProjectsPage';
-import WorkingDrawingsPage from './pages/architect/WorkingDrawingsPage';
-import DrawingRevisionsPage from './pages/architect/DrawingRevisionsPage';
-import DesignDocsPage from './pages/architect/DesignDocsPage';
-import TechSpecsPage from './pages/architect/TechSpecsPage';
-import SiteQueriesPage from './pages/architect/SiteQueriesPage';
-import ArchitectIssuesPage from './pages/architect/ArchitectIssuesPage';
-import ReviewRequestsPage from './pages/architect/ReviewRequestsPage';
-import ArchitectDocumentsPage from './pages/architect/ArchitectDocumentsPage';
-import ArchitectActivityPage from './pages/architect/ArchitectActivityPage';
-
-// Contractor pages
-import ContractorDashboard from './pages/contractor/ContractorDashboard';
-import ContractorProjectsPage from './pages/contractor/ContractorProjectsPage';
-import AssignedWorkPage from './pages/contractor/AssignedWorkPage';
-import WorkSchedulePage from './pages/contractor/WorkSchedulePage';
-import LabourCrewPage from './pages/contractor/LabourCrewPage';
-import WorkUpdatesPage from './pages/contractor/WorkUpdatesPage';
-import ContractorMaterialsPage from './pages/contractor/ContractorMaterialsPage';
-import ContractorEquipmentPage from './pages/contractor/ContractorEquipmentPage';
-import ContractorIssuesPage from './pages/contractor/ContractorIssuesPage';
-import ContractorDocumentsPage from './pages/contractor/ContractorDocumentsPage';
-import ContractorReportsPage from './pages/contractor/ContractorReportsPage';
-import ContractorActivityPage from './pages/contractor/ContractorActivityPage';
-
 // Sales pages
 import SalesDashboard from './pages/sales/SalesDashboard';
 import SalesClientsPage from './pages/sales/SalesClientsPage';
@@ -141,9 +111,28 @@ import SalesFollowupsPage from './pages/sales/SalesFollowupsPage';
 import SalesReportsPage from './pages/sales/SalesReportsPage';
 import SalesDocumentsPage from './pages/sales/SalesDocumentsPage';
 import SalesActivityPage from './pages/sales/SalesActivityPage';
-
-// Shared
 import ProfilePage from './pages/shared/ProfilePage';
+
+// Simple client-side auth state from localStorage
+function getStoredAuth() {
+  try {
+    const raw = localStorage.getItem('align_auth');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+// Protected route wrapper
+function ProtectedRoute({ children, requiredRole, auth }) {
+  if (!auth) {
+    return <Navigate to="/login" replace />;
+  }
+  if (requiredRole && auth.role !== requiredRole && auth.role !== 'Admin') {
+    return <Navigate to={ROLE_PATH[auth.role] || '/login'} replace />;
+  }
+  return children;
+}
 
 const ROLE_PATH = {
   'Admin': '/admin',
@@ -151,43 +140,36 @@ const ROLE_PATH = {
   'Site Engineer': '/engineer',
   'Procurement Officer': '/procurement',
   'Accounts': '/accounts',
-  'Architect': '/architect',
-  'Contractor': '/contractor',
   'Sales Executive': '/sales',
 };
 
-function ProtectedRoute({ auth, requiredRole, children }) {
-  if (!auth || auth.role !== requiredRole) return <Navigate to="/login" replace />;
-  return children;
-}
-
 function App() {
-  const [auth, setAuth] = useState(() => {
-    try {
-      const saved = localStorage.getItem('align_auth');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [auth, setAuth] = useState(getStoredAuth);
 
-  const handleLogin = (userAuth) => {
-    setAuth(userAuth);
-    try {
-      localStorage.setItem('align_auth', JSON.stringify(userAuth));
-    } catch (e) {
-      console.error('Failed to save auth to localStorage', e);
-    }
+  const handleLogin = (authData) => {
+    localStorage.setItem('align_auth', JSON.stringify(authData));
+    setAuth(authData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('align_auth');
+    setAuth(null);
   };
 
   return (
     <AppProvider>
       <Routes>
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        {/* ── PUBLIC ────────────────────────────────────────────── */}
+        <Route path="/login" element={
+          auth ? <Navigate to={ROLE_PATH[auth.role] || '/admin'} replace /> : <Login onLogin={handleLogin} />
+        } />
 
-
-        {/* ── ADMIN ─────────────────────────────────── */}
-        <Route path="/admin" element={<ProtectedRoute auth={auth} requiredRole="Admin"><AdminLayout role="admin" /></ProtectedRoute>}>
+        {/* ── ADMIN (Full Access + Contractor Management) ────────── */}
+        <Route path="/admin" element={
+          <ProtectedRoute auth={auth} requiredRole="Admin">
+            <AdminLayout onLogout={handleLogout} />
+          </ProtectedRoute>
+        }>
           <Route index element={<AdminDashboard />} />
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="sites" element={<SitesPage />} />
@@ -195,7 +177,6 @@ function App() {
           <Route path="materials" element={<MaterialsPage />} />
           <Route path="inventory" element={<InventoryPage />} />
           <Route path="purchases" element={<PurchasesPage />} />
-          <Route path="expenses" element={<ExpensesPage />} />
           <Route path="progress" element={<ProgressPage />} />
           <Route path="issues" element={<IssuesPage />} />
           <Route path="documents" element={<DocumentsPage />} />
@@ -203,14 +184,17 @@ function App() {
           <Route path="employees" element={<EmployeesPage />} />
           <Route path="roles" element={<RolesPage />} />
           <Route path="vendors" element={<VendorsPage />} />
-          <Route path="clients" element={<ClientsPage />} />
-          <Route path="glossary" element={<GlossaryPage />} />
+          <Route path="contractors" element={<ContractorsPage />} />
           <Route path="settings" element={<SettingsPage />} />
-          <Route path="*" element={<AdminDashboard />} />
+          <Route path="profile" element={<ProfilePage role="admin" name="Arjun Sharma" />} />
         </Route>
 
-        {/* ── PROJECT MANAGER ──────────────────────── */}
-        <Route path="/pm" element={<ProtectedRoute auth={auth} requiredRole="Project Manager"><RoleLayout role="pm" /></ProtectedRoute>}>
+        {/* ── PROJECT MANAGER (Non-Fiscal, Task Progress, Combined Reports) ── */}
+        <Route path="/pm" element={
+          <ProtectedRoute auth={auth} requiredRole="Project Manager">
+            <RoleLayout role="pm" />
+          </ProtectedRoute>
+        }>
           <Route index element={<PMDashboard />} />
           <Route path="projects" element={<PMProjectsPage />} />
           <Route path="sites" element={<PMSitesPage />} />
@@ -219,21 +203,22 @@ function App() {
           <Route path="materials" element={<PMMaterialsPage />} />
           <Route path="inventory" element={<PMInventoryPage />} />
           <Route path="material-requests" element={<PMMaterialRequestsPage />} />
-          <Route path="purchases" element={<PMPurchasesPage />} />
-          <Route path="expenses" element={<PMExpensesPage />} />
           <Route path="progress" element={<PMProgressPage />} />
-          <Route path="daily-reports" element={<PMDailyReportsPage />} />
           <Route path="issues" element={<PMIssuesPage />} />
           <Route path="documents" element={<PMDocumentsPage />} />
           <Route path="reports" element={<PMReportsPage />} />
           <Route path="activity" element={<PMActivityPage />} />
           <Route path="approvals" element={<PMApprovalsPage />} />
           <Route path="calendar" element={<PMCalendarPage />} />
-          <Route path="profile" element={<PMProfilePage role="pm" name="Rahul Mehta" />} />
+          <Route path="profile" element={<ProfilePage role="pm" name="Rahul Mehta" />} />
         </Route>
 
-        {/* ── SITE ENGINEER ─────────────────────────── */}
-        <Route path="/engineer" element={<ProtectedRoute auth={auth} requiredRole="Site Engineer"><RoleLayout role="se" /></ProtectedRoute>}>
+        {/* ── SITE ENGINEER ─────────────────────────────────────── */}
+        <Route path="/engineer" element={
+          <ProtectedRoute auth={auth} requiredRole="Site Engineer">
+            <RoleLayout role="engineer" />
+          </ProtectedRoute>
+        }>
           <Route index element={<EngineerDashboard />} />
           <Route path="sites" element={<SEMySitesPage />} />
           <Route path="tasks" element={<SETasksPage />} />
@@ -247,11 +232,15 @@ function App() {
           <Route path="issues" element={<SEIssuesPage />} />
           <Route path="documents" element={<SEDocumentsPage />} />
           <Route path="activity" element={<SEActivityPage />} />
-          <Route path="profile" element={<ProfilePage role="se" name="Rajesh K" />} />
+          <Route path="profile" element={<ProfilePage role="engineer" name="Rajesh K" />} />
         </Route>
 
-        {/* ── PROCUREMENT ───────────────────────────── */}
-        <Route path="/procurement" element={<ProtectedRoute auth={auth} requiredRole="Procurement Officer"><RoleLayout role="po" /></ProtectedRoute>}>
+        {/* ── PROCUREMENT OFFICER ───────────────────────────────── */}
+        <Route path="/procurement" element={
+          <ProtectedRoute auth={auth} requiredRole="Procurement Officer">
+            <RoleLayout role="procurement" />
+          </ProtectedRoute>
+        }>
           <Route index element={<PODashboard />} />
           <Route path="material-requests" element={<POMaterialRequestsPage />} />
           <Route path="approvals" element={<POApprovalsPage />} />
@@ -259,6 +248,7 @@ function App() {
           <Route path="quotations" element={<POQuotationsPage />} />
           <Route path="purchase-orders" element={<POPurchaseOrdersPage />} />
           <Route path="deliveries" element={<PODeliveriesPage />} />
+          <Route path="inspections" element={<POQualityInspectionPage />} />
           <Route path="receipts" element={<POReceiptsPage />} />
           <Route path="inventory" element={<POInventoryPage />} />
           <Route path="equipment" element={<POEquipmentPage />} />
@@ -268,14 +258,19 @@ function App() {
           <Route path="issues" element={<POIssuesPage />} />
           <Route path="documents" element={<PODocumentsPage />} />
           <Route path="activity" element={<POActivityPage />} />
-          <Route path="profile" element={<ProfilePage role="po" name="Priya Rao" />} />
+          <Route path="profile" element={<ProfilePage role="procurement" name="Priya Rao" />} />
         </Route>
 
-        {/* ── ACCOUNTS ──────────────────────────────── */}
-        <Route path="/accounts" element={<ProtectedRoute auth={auth} requiredRole="Accounts"><RoleLayout role="accounts" /></ProtectedRoute>}>
+        {/* ── ACCOUNTS (Financial Oversight + Exact 11-Col Inventory) ── */}
+        <Route path="/accounts" element={
+          <ProtectedRoute auth={auth} requiredRole="Accounts">
+            <RoleLayout role="accounts" />
+          </ProtectedRoute>
+        }>
           <Route index element={<AccountsDashboard />} />
           <Route path="purchase-orders" element={<AccountsPOPage />} />
           <Route path="receipts" element={<AccountsReceiptsPage />} />
+          <Route path="inventory" element={<AccountsInventoryPage />} />
           <Route path="invoices" element={<AccountsInvoicesPage />} />
           <Route path="invoice-verification" element={<AccountsInvoiceVerificationPage />} />
           <Route path="payments" element={<AccountsPaymentsPage />} />
@@ -292,41 +287,12 @@ function App() {
           <Route path="profile" element={<ProfilePage role="accounts" name="Anjali Chauhan" />} />
         </Route>
 
-        {/* ── ARCHITECT ─────────────────────────────── */}
-        <Route path="/architect" element={<ProtectedRoute auth={auth} requiredRole="Architect"><RoleLayout role="architect" /></ProtectedRoute>}>
-          <Route index element={<ArchitectDashboard />} />
-          <Route path="projects" element={<ArchitectProjectsPage />} />
-          <Route path="drawings" element={<WorkingDrawingsPage />} />
-          <Route path="revisions" element={<DrawingRevisionsPage />} />
-          <Route path="design-docs" element={<DesignDocsPage />} />
-          <Route path="tech-specs" element={<TechSpecsPage />} />
-          <Route path="site-queries" element={<SiteQueriesPage />} />
-          <Route path="issues" element={<ArchitectIssuesPage />} />
-          <Route path="review-requests" element={<ReviewRequestsPage />} />
-          <Route path="documents" element={<ArchitectDocumentsPage />} />
-          <Route path="activity" element={<ArchitectActivityPage />} />
-          <Route path="profile" element={<ProfilePage role="architect" name="Vikram Patel" />} />
-        </Route>
-
-        {/* ── CONTRACTOR ────────────────────────────── */}
-        <Route path="/contractor" element={<ProtectedRoute auth={auth} requiredRole="Contractor"><RoleLayout role="contractor" /></ProtectedRoute>}>
-          <Route index element={<ContractorDashboard />} />
-          <Route path="projects" element={<ContractorProjectsPage />} />
-          <Route path="work" element={<AssignedWorkPage />} />
-          <Route path="schedule" element={<WorkSchedulePage />} />
-          <Route path="crew" element={<LabourCrewPage />} />
-          <Route path="updates" element={<WorkUpdatesPage />} />
-          <Route path="materials" element={<ContractorMaterialsPage />} />
-          <Route path="equipment" element={<ContractorEquipmentPage />} />
-          <Route path="issues" element={<ContractorIssuesPage />} />
-          <Route path="documents" element={<ContractorDocumentsPage />} />
-          <Route path="reports" element={<ContractorReportsPage />} />
-          <Route path="activity" element={<ContractorActivityPage />} />
-          <Route path="profile" element={<ProfilePage role="contractor" name="Ramesh Contractor" />} />
-        </Route>
-
-        {/* ── SALES ─────────────────────────────────── */}
-        <Route path="/sales" element={<ProtectedRoute auth={auth} requiredRole="Sales Executive"><RoleLayout role="sales" /></ProtectedRoute>}>
+        {/* ── SALES EXECUTIVE (CRM + Project Completion Milestone) ─ */}
+        <Route path="/sales" element={
+          <ProtectedRoute auth={auth} requiredRole="Sales Executive">
+            <RoleLayout role="sales" />
+          </ProtectedRoute>
+        }>
           <Route index element={<SalesDashboard />} />
           <Route path="clients" element={<SalesClientsPage />} />
           <Route path="leads" element={<SalesLeadsPage />} />
@@ -342,7 +308,7 @@ function App() {
           <Route path="profile" element={<ProfilePage role="sales" name="Riya Sharma" />} />
         </Route>
 
-        {/* ── DEFAULT REDIRECT ──────────────────────── */}
+        {/* ── DEFAULT REDIRECT ──────────────────────────────────── */}
         <Route path="*" element={
           <Navigate to={auth ? (ROLE_PATH[auth.role] || '/login') : '/login'} replace />
         } />

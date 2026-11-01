@@ -34,18 +34,6 @@ const ROLE_CREDENTIALS = {
     path: '/accounts',
     label: 'accounts / password'
   },
-  'Architect': {
-    usernames: ['architect', 'vikram.patel@align.in', 'vikram.patel'],
-    passwords: ['password', 'architect123'],
-    path: '/architect',
-    label: 'architect / password'
-  },
-  'Contractor': {
-    usernames: ['contractor', 'ramesh.c@align.in', 'ramesh.c'],
-    passwords: ['password', 'contractor123'],
-    path: '/contractor',
-    label: 'contractor / password'
-  },
   'Sales Executive': {
     usernames: ['sales', 'riya.sharma@align.in', 'riya.sharma'],
     passwords: ['password', 'sales123'],
@@ -163,7 +151,7 @@ export default function Login({ onLogin }) {
           <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px', textAlign: 'center' }}>
             Quick One-Click Demo Role Switch:
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
             {Object.keys(ROLE_CREDENTIALS).map(r => (
               <button
                 key={r}
@@ -171,7 +159,7 @@ export default function Login({ onLogin }) {
                 onClick={() => handleRoleChange(r)}
                 style={{
                   padding: '6px 4px',
-                  fontSize: '0.7rem',
+                  fontSize: '0.72rem',
                   borderRadius: '6px',
                   border: role === r ? '1px solid var(--color-blue)' : '1px solid var(--border-color)',
                   background: role === r ? 'var(--color-blue-light)' : 'var(--bg-main)',

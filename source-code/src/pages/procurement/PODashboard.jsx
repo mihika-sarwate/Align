@@ -2,171 +2,229 @@ import React from 'react';
 import { useApp } from '../../store/AppContext';
 import KPICard from '../../components/KPICard';
 import StatusBadge from '../../components/common/StatusBadge';
-import { ShoppingCart, Truck, AlertTriangle, Package, Star } from 'lucide-react';
+import ProcurementQuickActions from '../../components/ProcurementQuickActions';
+import { ShoppingCart, Truck, AlertTriangle, Package, ShieldCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const fmt = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
-
+/**
+ * Procurement Officer Dashboard (Part 5.1)
+ *
+ * Requirements:
+ * - Quick Actions moved to the TOP.
+ * - Remove Inventory Value.
+ * - Remove Top Vendors.
+ * - Add Quality Inspection widget/metrics.
+ * - Make the dashboard more compact.
+ * - Preserve inventory functionality.
+ */
 export default function PODashboard() {
   const { state } = useApp();
-  const { materialRequests, purchaseOrders, deliveries, inventory, vendors, quotations } = state;
+  const navigate = useNavigate();
+  const { materialRequests, purchaseOrders, deliveries, inventory, qualityInspections } = state;
 
-  const pendingMRQs = materialRequests.filter(m => m.status === 'Pending').length;
-  const posInTransit = deliveries.filter(d => d.status === 'In Transit').length;
-  const delayed = deliveries.filter(d => {
+  const pendingMRQs = (materialRequests || []).filter(m => m.status === 'Pending').length;
+  const posInTransit = (deliveries || []).filter(d => d.status === 'In Transit').length;
+  const delayed = (deliveries || []).filter(d => {
     if (!d.expectedDate || d.status === 'Delivered') return false;
     return new Date(d.expectedDate) < new Date() && d.status !== 'Delivered';
   }).length;
-  const lowStock = inventory.filter(i => i.qtyRequired > 0 && i.qtyPresent / i.qtyRequired < 1).length;
+  const lowStock = (inventory || []).filter(i => i.qtyRequired > 0 && i.qtyPresent / i.qtyRequired < 1).length;
+
+  // Quality Inspection metrics (Section 5.1 & 5.2)
+  const inspections = qualityInspections || [];
+  const pendingInspections = inspections.filter(i => i.qualityStatus === 'Pending Inspection').length;
+  const passedInspections = inspections.filter(i => i.qualityStatus === 'Passed').length;
 
   const today = new Date().toDateString();
-  const todayDeliveries = deliveries.filter(d => d.expectedDate && new Date(d.expectedDate).toDateString() === today);
-  const activePOs = purchaseOrders.filter(p => ['Approved', 'Dispatched', 'Partially Received'].includes(p.status));
-
-  const vendorPerf = vendors.map(v => {
-    const vPOs = purchaseOrders.filter(p => p.vendorId === v.id);
-    const vQtns = quotations.filter(q => q.vendorId === v.id);
-    const accepted = vQtns.filter(q => q.status === 'Accepted').length;
-    return { ...v, poCount: vPOs.length, qtnCount: vQtns.length, accepted };
-  }).filter(v => v.poCount > 0 || v.qtnCount > 0);
+  const todayDeliveries = (deliveries || []).filter(d => d.expectedDate && new Date(d.expectedDate).toDateString() === today);
+  const activePOs = (purchaseOrders || []).filter(p => ['Approved', 'Dispatched', 'Partially Received'].includes(p.status));
 
   return (
-    <div>
-      <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
-          Welcome, Priya Rao!
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* Header */}
+      <div style={{ marginBottom: '0' }}>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px' }}>
+          Procurement Operations Workspace — Priya Rao
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Procurement Officer — ALIGN Platform</p>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.825rem' }}>
+          Inbound delivery schedules, vendor commitments, quality inspections, and site inventory replenishment.
+        </p>
       </div>
 
-      <div className="kpi-grid" style={{ marginBottom: '28px' }}>
-        <KPICard title="Pending Material Requests" value={pendingMRQs} icon={<ShoppingCart size={22} />} color="orange" subtitle="Awaiting PO creation" />
-        <KPICard title="POs in Transit" value={posInTransit} icon={<Truck size={22} />} color="blue" subtitle="En route to site" />
-        <KPICard title="Deliveries Delayed" value={delayed} icon={<AlertTriangle size={22} />} color="red" subtitle="Past expected date" />
-        <KPICard title="Low Stock Items" value={lowStock} icon={<Package size={22} />} color="teal" subtitle="Below required qty" />
+      {/* QUICK ACTIONS MOVED TO TOP (Section 5.1) */}
+      <div className="card" style={{ padding: '12px 16px', background: 'var(--bg-card)' }}>
+        <ProcurementQuickActions />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-        {/* Pending Material Requests */}
-        <div className="card">
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 600, margin: 0 }}>Pending Material Requests</h3>
-            <span style={{ fontSize: '0.75rem', color: 'var(--color-blue)', cursor: 'pointer' }}>View All</span>
+      {/* Compact KPIs (NO Inventory Value, includes Quality Inspections) */}
+      <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+        <KPICard
+          title="Pending Requests"
+          value={pendingMRQs}
+          icon={<ShoppingCart size={20} />}
+          color="orange"
+          subtitle="Requisitions awaiting PO"
+        />
+        <KPICard
+          title="Deliveries In Transit"
+          value={posInTransit}
+          icon={<Truck size={20} />}
+          color="blue"
+          subtitle="En route to site"
+        />
+        <KPICard
+          title="Delayed Deliveries"
+          value={delayed}
+          icon={<AlertTriangle size={20} />}
+          color="red"
+          subtitle="Past expected schedule"
+        />
+        <KPICard
+          title="Pending Quality Inspection"
+          value={pendingInspections}
+          icon={<ShieldCheck size={20} />}
+          color="purple"
+          subtitle={`${passedInspections} batches passed`}
+        />
+        <KPICard
+          title="Low Stock Materials"
+          value={lowStock}
+          icon={<Package size={20} />}
+          color="teal"
+          subtitle="Below required quantity"
+        />
+      </div>
+
+      {/* Quality Inspection Overview + Active POs */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        {/* Quality Inspection Summary Widget (Section 5.1 & 5.2) */}
+        <div className="card" style={{ padding: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
+            <h3 style={{ fontSize: '0.925rem', fontWeight: 600, margin: 0 }}>Recent Quality Inspections</h3>
+            <button
+              className="btn btn-sm btn-secondary"
+              style={{ fontSize: '0.75rem', padding: '3px 8px' }}
+              onClick={() => navigate('/procurement/inspections')}
+            >
+              Full Inspection Log
+            </button>
           </div>
-          <div style={{ padding: '0' }}>
-            {materialRequests.filter(m => m.status === 'Pending').slice(0, 5).map(m => (
-              <div key={m.id} style={{ padding: '12px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {inspections.slice(0, 4).map(ins => (
+              <div
+                key={ins.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 10px',
+                  background: 'var(--bg-main)',
+                  borderRadius: '6px',
+                  fontSize: '0.8rem'
+                }}
+              >
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{m.id}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{m.materialName} — {m.qty} {m.unit}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Required: {m.requiredDate}</div>
+                  <strong style={{ color: 'var(--color-blue)', display: 'block' }}>{ins.id} • {ins.materialName}</strong>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                    PO: {ins.poId} • {ins.vendorName} • {ins.siteId}
+                  </span>
                 </div>
-                <StatusBadge status={m.status} />
+                <div style={{ textAlign: 'right' }}>
+                  <span className={`badge ${ins.qualityStatus === 'Passed' ? 'green' : ins.qualityStatus === 'Failed' ? 'red' : 'orange'}`}>
+                    {ins.qualityStatus}
+                  </span>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    Acc: {ins.qtyAccepted} / {ins.qtyReceived}
+                  </div>
+                </div>
               </div>
             ))}
-            {materialRequests.filter(m => m.status === 'Pending').length === 0 && (
-              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No pending requests</div>
-            )}
           </div>
         </div>
 
-        {/* Active POs */}
-        <div className="card">
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 600, margin: 0 }}>Active Purchase Orders</h3>
-            <span style={{ fontSize: '0.75rem', color: 'var(--color-blue)', cursor: 'pointer' }}>View All</span>
+        {/* Active Purchase Orders */}
+        <div className="card" style={{ padding: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
+            <h3 style={{ fontSize: '0.925rem', fontWeight: 600, margin: 0 }}>Active Purchase Orders</h3>
+            <button
+              className="btn btn-sm btn-secondary"
+              style={{ fontSize: '0.75rem', padding: '3px 8px' }}
+              onClick={() => navigate('/procurement/purchase-orders')}
+            >
+              View All POs
+            </button>
           </div>
-          <div>
-            {activePOs.slice(0, 5).map(po => (
-              <div key={po.id} style={{ padding: '12px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {activePOs.slice(0, 4).map(po => (
+              <div
+                key={po.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 10px',
+                  background: 'var(--bg-main)',
+                  borderRadius: '6px',
+                  fontSize: '0.8rem'
+                }}
+              >
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{po.id}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{po.vendorName}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{fmt(po.totalAmount)} — Due: {po.expectedDelivery}</div>
+                  <strong style={{ color: 'var(--color-blue)', display: 'block' }}>{po.id} • {po.vendorName}</strong>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                    {po.materialName || po.items?.[0]?.materialName} • Due: {po.expectedDelivery}
+                  </span>
                 </div>
                 <StatusBadge status={po.status} />
               </div>
             ))}
-            {activePOs.length === 0 && (
-              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No active POs</div>
-            )}
           </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-        {/* Today's Deliveries */}
-        <div className="card">
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-color)' }}>
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 600, margin: 0 }}>Today's Deliveries</h3>
+      {/* Deliveries & Low Stock Quick Row */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div className="card" style={{ padding: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <h3 style={{ fontSize: '0.925rem', fontWeight: 600, margin: 0 }}>Pending Material Requisitions</h3>
+            <button
+              className="btn btn-sm btn-secondary"
+              style={{ fontSize: '0.75rem', padding: '2px 8px' }}
+              onClick={() => navigate('/procurement/material-requests')}
+            >
+              Process Requests
+            </button>
           </div>
-          <div>
-            {todayDeliveries.length === 0 ? (
-              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No deliveries scheduled today</div>
-            ) : todayDeliveries.map(d => (
-              <div key={d.id} style={{ padding: '12px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{d.id}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{d.vendorName}</div>
-                </div>
-                <StatusBadge status={d.status} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {(materialRequests || []).filter(m => m.status === 'Pending').slice(0, 3).map(m => (
+              <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--bg-main)', borderRadius: '4px', fontSize: '0.8rem' }}>
+                <span><strong>{m.materialName}</strong> ({m.qty} {m.unit})</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Site: {m.siteId}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Low Stock Inventory */}
-        <div className="card">
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-color)' }}>
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 600, margin: 0 }}>Low Stock Inventory</h3>
+        <div className="card" style={{ padding: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <h3 style={{ fontSize: '0.925rem', fontWeight: 600, margin: 0 }}>Stock Shortages Needing PO</h3>
+            <button
+              className="btn btn-sm btn-secondary"
+              style={{ fontSize: '0.75rem', padding: '2px 8px' }}
+              onClick={() => navigate('/procurement/inventory')}
+            >
+              Open Inventory
+            </button>
           </div>
-          <div>
-            {inventory.filter(i => i.qtyRequired > 0 && i.qtyPresent / i.qtyRequired < 1).slice(0, 5).map(item => (
-              <div key={item.id} style={{ padding: '12px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{item.material || item.equipment}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{item.location}</div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--color-red)' }}>{item.qtyPresent} / {item.qtyRequired}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Present / Required</div>
-                </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {(inventory || []).filter(i => (i.qtyPresent / (i.qtyRequired || 1)) < 1).slice(0, 3).map(item => (
+              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--bg-main)', borderRadius: '4px', fontSize: '0.8rem' }}>
+                <span><strong>{item.materialName || item.material}</strong></span>
+                <span style={{ color: 'var(--color-red)', fontWeight: 600 }}>
+                  Present: {item.qtyPresent} / Req: {item.qtyRequired}
+                </span>
               </div>
             ))}
-            {inventory.filter(i => i.qtyRequired > 0 && i.qtyPresent / i.qtyRequired < 1).length === 0 && (
-              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>All stock levels adequate</div>
-            )}
           </div>
-        </div>
-      </div>
-
-      {/* Vendor Performance Summary */}
-      <div className="card" style={{ marginTop: '20px' }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-color)' }}>
-          <h3 style={{ fontSize: '0.95rem', fontWeight: 600, margin: 0 }}>Vendor Performance Summary</h3>
-        </div>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-            <thead>
-              <tr style={{ background: 'var(--bg-light)' }}>
-                <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Vendor</th>
-                <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Category</th>
-                <th style={{ padding: '10px 16px', textAlign: 'center', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>POs Issued</th>
-                <th style={{ padding: '10px 16px', textAlign: 'center', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Quotations</th>
-                <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vendorPerf.map(v => (
-                <tr key={v.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                  <td style={{ padding: '10px 16px', fontWeight: 600 }}>{v.name}</td>
-                  <td style={{ padding: '10px 16px' }}><StatusBadge status={v.category} /></td>
-                  <td style={{ padding: '10px 16px', textAlign: 'center' }}>{v.poCount}</td>
-                  <td style={{ padding: '10px 16px', textAlign: 'center' }}>{v.qtnCount}</td>
-                  <td style={{ padding: '10px 16px' }}><StatusBadge status={v.status} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

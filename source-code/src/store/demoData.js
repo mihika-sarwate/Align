@@ -262,58 +262,53 @@ export const demoWeeklyTargets = [
   { id: 'WKT-004', taskId: 'TSK-003', taskCode: 'SP0102', week: 2, weekLabel: 'Week 2 (08 Mar - 15 Mar)', plannedQty: 70, actualQty: 65, unit: 'cubic metres', status: 'In Progress' },
 ];
 
-export const demoGlossary = [
-  { id: 'GLO-001', term: 'Aggregate', definition: 'Sand particles, gravel, or finely crushed stone mixed with cement and water to prepare concrete.', relatedPhases: ['PC', 'SP'], relatedMaterials: ['MAT-002', 'MAT-003'] },
-  { id: 'GLO-002', term: 'Balcony', definition: 'An external projection of a slab that can maximise floor area, improve aesthetics, and provide civil or social functions.', relatedPhases: ['SS'], relatedMaterials: [] },
-  { id: 'GLO-003', term: 'Beam', definition: 'A horizontal structural member that bears load and connects columns.', relatedPhases: ['SP'], relatedMaterials: [] },
-  { id: 'GLO-004', term: 'Building Services', definition: 'Operational and safety features in a building, including lifts, plumbing, HVAC, and electrical systems.', relatedPhases: ['BS'], relatedMaterials: [] },
-  { id: 'GLO-005', term: 'Cantilever', definition: 'A horizontal member with rigid support at only one end.', relatedPhases: [], relatedMaterials: [] },
-  { id: 'GLO-006', term: 'Casting', definition: 'Pouring concrete to create a column, beam, or slab.', relatedPhases: ['SP', 'SS'], relatedMaterials: [] },
-  { id: 'GLO-007', term: 'Cement', definition: 'A raw material made from limestone, clay, shale, silicates, and other trace minerals, used to make concrete.', relatedPhases: ['SP', 'SS', 'BS'], relatedMaterials: ['MAT-001'] },
-  { id: 'GLO-008', term: 'Cement Mixer', definition: 'A device used for mixing cement.', relatedPhases: [], relatedMaterials: [] },
-  { id: 'GLO-009', term: 'Column', definition: 'A vertical load-bearing member typically placed to support slabs.', relatedPhases: ['SP'], relatedMaterials: [] },
-  { id: 'GLO-010', term: 'Crane', definition: 'A machine that uses pulleys to lift and transport heavy loads.', relatedPhases: [], relatedMaterials: [] },
-  { id: 'GLO-011', term: 'Curing Period', definition: 'The time taken by concrete to achieve its maximum strength after casting, typically 28 days.', relatedPhases: ['SP', 'SS'], relatedMaterials: [] },
-  { id: 'GLO-012', term: 'Foundation/Footing', definition: 'The underground base of a structure that transfers load to the soil.', relatedPhases: ['PC'], relatedMaterials: [] },
-  { id: 'GLO-013', term: 'Framing', definition: 'The structural system of columns and beams that transfers structural loads to the earth, such as RCC or steel framing.', relatedPhases: ['SP'], relatedMaterials: [] },
-  { id: 'GLO-014', term: 'HVAC', definition: 'Heating, Ventilation, and Air Conditioning.', relatedPhases: ['BS'], relatedMaterials: [] },
-  { id: 'GLO-015', term: 'Load', definition: 'Forces experienced by a structure due to its own weight, wind, seismic activity, furniture, internal components, people, and other imposed loads.', relatedPhases: [], relatedMaterials: [] },
-  { id: 'GLO-016', term: 'Masonry', definition: 'The craft and science of placing bricks, stone, adobe blocks, concrete blocks, and similar units to create a structure.', relatedPhases: ['BS'], relatedMaterials: ['MAT-006'] },
-  { id: 'GLO-017', term: 'MEP', definition: 'Mechanicals, Electricals, and Plumbing — the key building services systems.', relatedPhases: ['BS'], relatedMaterials: [] },
-  { id: 'GLO-018', term: 'Piles', definition: 'Deep steel rod-like members drilled underground to transfer loads to stronger soil strata, typically used for large structures with high loads.', relatedPhases: ['PC'], relatedMaterials: [] },
-  { id: 'GLO-019', term: 'Plumbing', definition: 'The branch of construction and building sciences concerned with sanitary infrastructure and systematic removal of human waste.', relatedPhases: ['BS'], relatedMaterials: [] },
-  { id: 'GLO-020', term: 'Plinth', definition: 'The part of the structure that transfers load from the main structure to the foundation.', relatedPhases: ['SP'], relatedMaterials: [] },
-  { id: 'GLO-021', term: 'Podium', definition: 'A system of multiple storeys stacked on top of one another, such as multistorey parking facilities.', relatedPhases: ['SP'], relatedMaterials: [] },
-  { id: 'GLO-022', term: 'Pre-construction', definition: 'The phase before the main construction work, including site surveying, defining foundation placement, and foundation construction.', relatedPhases: ['PC'], relatedMaterials: [] },
-  { id: 'GLO-023', term: 'Rebars', definition: 'Reinforcement bars, typically ranging from 8 mm to 60 mm in diameter, used to reinforce concrete.', relatedPhases: ['SP', 'SS'], relatedMaterials: ['MAT-004', 'MAT-005'] },
-  { id: 'GLO-024', term: 'RCC (Reinforced Cement Concrete)', definition: 'Concrete reinforced with steel rebars to combine concrete\'s compressive strength with steel\'s tensile strength.', relatedPhases: ['SP', 'SS'], relatedMaterials: [] },
-  { id: 'GLO-025', term: 'Scaffolding/Shuttering', definition: 'Temporary wooden or steel shutters used to mould wet concrete into columns, beams, or slabs. Their removal after hardening is called de-shuttering.', relatedPhases: ['SP', 'SS'], relatedMaterials: ['MAT-008'] },
-  { id: 'GLO-026', term: 'Slab', definition: 'A thin horizontal structural member that defines a space, provides overhead cover and flooring, and is supported by beams and columns.', relatedPhases: ['SS'], relatedMaterials: [] },
-  { id: 'GLO-027', term: 'Soil Testing', definition: 'Testing the stability and strength of the soil on which a structure will be built.', relatedPhases: ['PC'], relatedMaterials: [] },
-  { id: 'GLO-028', term: 'Steel', definition: 'An alloy of iron and carbon, potentially containing elements such as nickel, with versatile construction applications.', relatedPhases: ['SP', 'SS'], relatedMaterials: ['MAT-004', 'MAT-005'] },
-  { id: 'GLO-029', term: 'Substructure', definition: 'The part of the structure below ground level, consisting of the foundation/footing and plinth.', relatedPhases: ['PC', 'SP'], relatedMaterials: [] },
-  { id: 'GLO-030', term: 'Superstructure', definition: 'The main part of the structure above ground level, consisting of inhabitable space.', relatedPhases: ['SP', 'SS'], relatedMaterials: [] },
-  { id: 'GLO-031', term: 'Trowel', definition: 'A tool used by masons to work with concrete, plaster, mud, and similar materials.', relatedPhases: ['BS'], relatedMaterials: [] },
-  { id: 'GLO-032', term: 'Vibrator', definition: 'A vibrating platform on which moulds of wet cement are placed to make the mixture more compact.', relatedPhases: ['SP', 'SS'], relatedMaterials: [] },
-  { id: 'GLO-033', term: 'Working Drawing (WD)', definition: 'A detailed, scaled compilation of drawings prepared by architects that provides design details and serves as a reference for construction or manufacturing.', relatedPhases: [], relatedMaterials: [] },
+export const demoContractors = [
+  { id: 'CON-001', name: 'Apex RCC Infra Pvt Ltd', designation: 'Civil & Structural Contractor', siteAllotted: 'SIT-201', contactPerson: 'Ramesh Sharma', phone: '+91 98230 11223', email: 'ramesh@apexinfra.com', status: 'Active', activeWorkers: 45, trade: 'Civil' },
+  { id: 'CON-002', name: 'BuildWell Foundation Works', designation: 'Piling & Substructure Specialist', siteAllotted: 'SIT-202', contactPerson: 'Suresh Patil', phone: '+91 98224 44556', email: 'suresh@buildwell.in', status: 'Active', activeWorkers: 28, trade: 'Civil' },
+  { id: 'CON-003', name: 'Shree Krishna MEP Engineers', designation: 'MEP & Plumbing Contractor', siteAllotted: 'SIT-203', contactPerson: 'Kailash Deshmukh', phone: '+91 98450 77889', email: 'kailash@skmep.in', status: 'Active', activeWorkers: 22, trade: 'MEP' },
+  { id: 'CON-004', name: 'Royal Electrical & HVAC Solutions', designation: 'Electrical Contractor', siteAllotted: 'SIT-204', contactPerson: 'Anand Verma', phone: '+91 98901 33445', email: 'anand@royalelectrical.com', status: 'Active', activeWorkers: 18, trade: 'Electrical' },
+  { id: 'CON-005', name: 'Finishing Touch Plastering & Paint', designation: 'Finishing & Painting Contractor', siteAllotted: 'SIT-205', contactPerson: 'Mahesh Jadhav', phone: '+91 98765 66778', email: 'mahesh@finishingtouch.com', status: 'Active', activeWorkers: 32, trade: 'Finishes' },
+  { id: 'CON-006', name: 'Global Scaffolding & Formwork', designation: 'Shuttering & Staging Vendor', siteAllotted: 'SIT-201', contactPerson: 'Deepak Sawant', phone: '+91 98112 88990', email: 'deepak@globalscaffolding.in', status: 'Active', activeWorkers: 15, trade: 'Scaffolding' },
+];
+
+export const demoQualityInspections = [
+  { id: 'QI-001', poId: 'PO-001', deliveryId: 'DEL-001', vendor: 'UltraTech Cement Ltd', material: 'OPC 53 Grade Cement', site: 'Skyline Heights - Site A', quantityReceived: '500 Bags', quantityAccepted: '495 Bags', quantityRejected: '5 Bags', inspectionDate: '2026-10-18', inspectedBy: 'Rajesh K (Site Engg)', status: 'Approved with Observations', visualInspection: 'Passed', labTestResults: 'Compressive 28-day test certificate verified', remarks: '5 bags damaged during transit and segregated.', photos: ['https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80'], receiptsAttached: true },
+  { id: 'QI-002', poId: 'PO-002', deliveryId: 'DEL-002', vendor: 'Tata Tiscon Distributors', material: 'Fe500D TMT Steel 16mm', site: 'Green Valley Villas - Phase 1', quantityReceived: '15 MT', quantityAccepted: '15 MT', quantityRejected: '0 MT', inspectionDate: '2026-10-22', inspectedBy: 'Priya Rao (Procurement)', status: 'Passed', visualInspection: 'Passed', labTestResults: 'MTC bend and elongation compliant (IS 1786)', remarks: 'Weight bridge slip matched PO specs.', photos: ['https://images.unsplash.com/photo-1541888946425-d0fbb180c5f7?auto=format&fit=crop&w=400&q=80'], receiptsAttached: true },
+  { id: 'QI-003', poId: 'PO-003', deliveryId: 'DEL-003', vendor: 'Supreme RMC ReadyMix', material: 'RMC M25 Mix Concrete', site: 'Skyline Heights - Site A', quantityReceived: '32 Cu.m', quantityAccepted: '32 Cu.m', quantityRejected: '0 Cu.m', inspectionDate: '2026-10-25', inspectedBy: 'Rajesh K (Site Engg)', status: 'Passed', visualInspection: 'Passed', labTestResults: 'Slump test: 120 mm achieved; 6 cubes cast', remarks: 'Pouring completed within initial setting time.', photos: ['https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=400&q=80'], receiptsAttached: true },
+  { id: 'QI-004', poId: 'PO-004', deliveryId: 'DEL-004', vendor: 'Kaveri River Aggregates', material: 'Crushed Coarse Aggregate 20mm', site: 'Commercial Plaza - Core Site', quantityReceived: '40 MT', quantityAccepted: '35 MT', quantityRejected: '5 MT', inspectionDate: '2026-10-27', inspectedBy: 'Priya Rao (Procurement)', status: 'Partially Rejected', visualInspection: 'Failed', labTestResults: 'Excessive silt and oversized flakiness index (>35%)', remarks: 'Debit note generated for 5 MT rejected material.', photos: ['https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80'], receiptsAttached: false },
+];
+
+export const demoLBMSRecords = [
+  { id: 'LBMS-001', code: 'ACT-01', activity: 'Footing & Raft Excavation', location: 'PRJ-101 / SIT-201', uom: 'Cu.m', plannedQty: 1800, actualQty: 1720, plannedDuration: 12, actualDuration: 13, plannedLabour: 16, actualLabour: 18, deviationReason: 'Hard rock stratum encountered during base digging' },
+  { id: 'LBMS-002', code: 'ACT-02', activity: 'PCC Pouring (M10)', location: 'PRJ-101 / SIT-201', uom: 'Cu.m', plannedQty: 320, actualQty: 320, plannedDuration: 4, actualDuration: 4, plannedLabour: 12, actualLabour: 12, deviationReason: '' },
+  { id: 'LBMS-003', code: 'ACT-03', activity: 'Footing Reinforcement & Shuttering', location: 'PRJ-101 / SIT-201', uom: 'MT', plannedQty: 28, actualQty: 25, plannedDuration: 7, actualDuration: 8, plannedLabour: 14, actualLabour: 16, deviationReason: 'Delayed delivery of 16mm rebar bundles' },
+  { id: 'LBMS-004', code: 'ACT-04', activity: 'Footing Concrete Casting (M25)', location: 'PRJ-101 / SIT-201', uom: 'Cu.m', plannedQty: 450, actualQty: 450, plannedDuration: 5, actualDuration: 5, plannedLabour: 20, actualLabour: 20, deviationReason: '' },
+  { id: 'LBMS-005', code: 'ACT-05', activity: 'Plinth Beam Bar Bending & Casting', location: 'PRJ-101 / SIT-201', uom: 'R.Mtr', plannedQty: 840, actualQty: 780, plannedDuration: 10, actualDuration: 11, plannedLabour: 18, actualLabour: 18, deviationReason: 'Labour shortage due to festive weekend' },
+  { id: 'LBMS-006', code: 'ACT-06', activity: 'Column Starter & Shuttering', location: 'PRJ-101 / SIT-201', uom: 'Nos', plannedQty: 96, actualQty: 96, plannedDuration: 6, actualDuration: 6, plannedLabour: 10, actualLabour: 10, deviationReason: '' },
+  { id: 'LBMS-007', code: 'ACT-07', activity: 'Column Concreting (Floor Stems)', location: 'PRJ-101 / SIT-201', uom: 'Cu.m', plannedQty: 180, actualQty: 175, plannedDuration: 4, actualDuration: 4, plannedLabour: 15, actualLabour: 14, deviationReason: '' },
+  { id: 'LBMS-008', code: 'ACT-08', activity: 'Slab Staging, De-shuttering & Re-propping', location: 'PRJ-101 / SIT-201', uom: 'Sq.m', plannedQty: 1200, actualQty: 1100, plannedDuration: 9, actualDuration: 10, plannedLabour: 22, actualLabour: 24, deviationReason: 'Inspection delay for de-shuttering clearance' },
+  { id: 'LBMS-009', code: 'ACT-09', activity: 'Slab Beam Reinforcement & Conduit Fixing', location: 'PRJ-101 / SIT-201', uom: 'MT', plannedQty: 34, actualQty: 34, plannedDuration: 6, actualDuration: 6, plannedLabour: 16, actualLabour: 16, deviationReason: '' },
+  { id: 'LBMS-010', code: 'ACT-10', activity: 'RCC Slab Casting (RMC Pumping)', location: 'PRJ-101 / SIT-201', uom: 'Cu.m', plannedQty: 260, actualQty: 260, plannedDuration: 2, actualDuration: 2, plannedLabour: 24, actualLabour: 24, deviationReason: '' },
+  { id: 'LBMS-011', code: 'ACT-11', activity: 'AAC Blockwork & Brick Masonry', location: 'PRJ-101 / SIT-201', uom: 'Cu.m', plannedQty: 540, actualQty: 480, plannedDuration: 14, actualDuration: 16, plannedLabour: 12, actualLabour: 10, deviationReason: 'Subcontractor mason gang attendance deficit' },
+  { id: 'LBMS-012', code: 'ACT-12', activity: 'Internal & External Wall Plastering', location: 'PRJ-101 / SIT-201', uom: 'Sq.m', plannedQty: 2400, actualQty: 2100, plannedDuration: 18, actualDuration: 20, plannedLabour: 18, actualLabour: 16, deviationReason: 'High humidity slowed down mortar curing rate' },
+  { id: 'LBMS-013', code: 'ACT-13', activity: 'Internal Floor Screed & Tile Laying', location: 'PRJ-101 / SIT-201', uom: 'Sq.m', plannedQty: 1600, actualQty: 1400, plannedDuration: 15, actualDuration: 16, plannedLabour: 14, actualLabour: 14, deviationReason: 'Delayed batch arrival of 800x800 vitrified tiles' },
+  { id: 'LBMS-014', code: 'ACT-14', activity: 'Plumbing & Concealed Electrical Rough-in', location: 'PRJ-101 / SIT-201', uom: 'Points', plannedQty: 680, actualQty: 650, plannedDuration: 12, actualDuration: 12, plannedLabour: 10, actualLabour: 10, deviationReason: '' },
 ];
 
 export const demoWorkAssignments = [
-  { id: 'WAS-001', contractorId: 'EMP-010', projectId: 'PRJ-101', siteId: 'SIT-201', taskId: 'TSK-003', scope: 'Plinth beam casting — Zone A', plannedQty: 120, unit: 'cubic metres', targetDate: '2024-03-15', status: 'In Progress', supervisingPM: 'EMP-002' },
+  { id: 'WAS-001', contractorId: 'CON-001', projectId: 'PRJ-101', siteId: 'SIT-201', taskId: 'TSK-003', scope: 'Plinth beam casting — Zone A', plannedQty: 120, unit: 'cubic metres', targetDate: '2024-03-15', status: 'In Progress', supervisingPM: 'EMP-002' },
 ];
 
 export const demoLabourLogs = [
-  { id: 'LBL-001', assignmentId: 'WAS-001', date: '2024-03-10', workers: 12, hoursWorked: 8, workDone: '40 cubic metres poured', reportedBy: 'EMP-010' },
+  { id: 'LBL-001', assignmentId: 'WAS-001', date: '2024-03-10', workers: 12, hoursWorked: 8, workDone: '40 cubic metres poured', reportedBy: 'CON-001' },
 ];
 
-// Role-to-credential mapping (client-side demo auth only)
+// Role-to-credential mapping (client-side demo auth only - exactly 6 roles)
 export const demoCredentials = {
   'Admin': { username: 'admin', password: 'password', employeeId: 'EMP-001', name: 'Arjun Sharma' },
   'Project Manager': { username: 'pm', password: 'password', employeeId: 'EMP-002', name: 'Rahul Mehta' },
   'Site Engineer': { username: 'engineer', password: 'password', employeeId: 'EMP-004', name: 'Rajesh K' },
   'Procurement Officer': { username: 'procurement', password: 'password', employeeId: 'EMP-007', name: 'Priya Rao' },
   'Accounts': { username: 'accounts', password: 'password', employeeId: 'EMP-008', name: 'Anjali Chauhan' },
-  'Architect': { username: 'architect', password: 'password', employeeId: 'EMP-009', name: 'Vikram Patel' },
-  'Contractor': { username: 'contractor', password: 'password', employeeId: 'EMP-010', name: 'Ramesh Contractor' },
   'Sales Executive': { username: 'sales', password: 'password', employeeId: 'EMP-011', name: 'Riya Sharma' },
 };

@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Briefcase, MapPin, CheckSquare, Package, Box,
-  ShoppingCart, IndianRupee, TrendingUp, AlertTriangle, FileText,
+  ShoppingCart, TrendingUp, AlertTriangle, FileText,
   Activity, Users, Shield, Truck, UserCircle, Settings, ChevronDown,
-  FileCheck, Calendar, PlusCircle, FilePlus, ClipboardList,
+  FileCheck, Calendar, FilePlus, ClipboardList,
   GitPullRequest, BarChart2, FileSignature, FileQuestion, UserPlus,
-  CreditCard, Tag, Wrench, HardHat, PenTool, Layers, Building2,
-  BookOpen, Bell
+  CreditCard, Wrench, HardHat
 } from 'lucide-react';
 import './Sidebar.css';
 
-// ─── Admin ───────────────────────────────────────────────
+// Admin Navigation
 const navAdmin = [
   { section: 'DASHBOARD', items: [
     { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/admin' },
@@ -23,7 +22,6 @@ const navAdmin = [
     { icon: <Package size={18} />, label: 'Materials', path: '/admin/materials' },
     { icon: <Box size={18} />, label: 'Inventory', path: '/admin/inventory' },
     { icon: <ShoppingCart size={18} />, label: 'Purchases', path: '/admin/purchases' },
-    { icon: <IndianRupee size={18} />, label: 'Expenses', path: '/admin/expenses' },
     { icon: <TrendingUp size={18} />, label: 'Progress', path: '/admin/progress' },
     { icon: <AlertTriangle size={18} />, label: 'Issues', path: '/admin/issues' },
     { icon: <FileText size={18} />, label: 'Documents', path: '/admin/documents' },
@@ -33,27 +31,22 @@ const navAdmin = [
     { icon: <Users size={18} />, label: 'Employees', path: '/admin/employees' },
     { icon: <Shield size={18} />, label: 'Roles & Permissions', path: '/admin/roles' },
     { icon: <Truck size={18} />, label: 'Vendors', path: '/admin/vendors' },
-    { icon: <UserCircle size={18} />, label: 'Clients', path: '/admin/clients' },
-    { icon: <BookOpen size={18} />, label: 'Glossary', path: '/admin/glossary' },
+    { icon: <HardHat size={18} />, label: 'Contractors', path: '/admin/contractors' },
     { icon: <Settings size={18} />, label: 'Settings', path: '/admin/settings' },
   ]},
 ];
 
-// ─── PM ───────────────────────────────────────────────────
+// PM Navigation
 const navPM = [
   { section: 'MAIN', items: [
     { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/pm' },
     { icon: <Briefcase size={18} />, label: 'My Projects', path: '/pm/projects' },
     { icon: <MapPin size={18} />, label: 'Sites', path: '/pm/sites' },
     { icon: <CheckSquare size={18} />, label: 'Tasks', path: '/pm/tasks' },
-    { icon: <Layers size={18} />, label: 'Project Phases', path: '/pm/phases' },
     { icon: <Package size={18} />, label: 'Materials', path: '/pm/materials' },
     { icon: <Box size={18} />, label: 'Inventory', path: '/pm/inventory' },
     { icon: <FileCheck size={18} />, label: 'Material Requests', path: '/pm/material-requests' },
-    { icon: <ShoppingCart size={18} />, label: 'Purchases', path: '/pm/purchases' },
-    { icon: <IndianRupee size={18} />, label: 'Expenses', path: '/pm/expenses' },
     { icon: <TrendingUp size={18} />, label: 'Progress', path: '/pm/progress' },
-    { icon: <ClipboardList size={18} />, label: 'Daily Reports', path: '/pm/daily-reports' },
     { icon: <AlertTriangle size={18} />, label: 'Issues', path: '/pm/issues' },
     { icon: <FileText size={18} />, label: 'Documents', path: '/pm/documents' },
     { icon: <BarChart2 size={18} />, label: 'Reports', path: '/pm/reports' },
@@ -64,7 +57,7 @@ const navPM = [
   ]},
 ];
 
-// ─── Site Engineer ─────────────────────────────────────────
+// Site Engineer Navigation
 const navSE = [
   { section: 'MAIN', items: [
     { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/engineer' },
@@ -84,7 +77,7 @@ const navSE = [
   ]},
 ];
 
-// ─── Procurement ───────────────────────────────────────────
+// Procurement Navigation
 const navPO = [
   { section: 'MAIN', items: [
     { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/procurement' },
@@ -94,6 +87,7 @@ const navPO = [
     { icon: <GitPullRequest size={18} />, label: 'Quotation Comparison', path: '/procurement/quotations' },
     { icon: <ShoppingCart size={18} />, label: 'Purchase Orders', path: '/procurement/purchase-orders' },
     { icon: <Truck size={18} />, label: 'Deliveries', path: '/procurement/deliveries' },
+    { icon: <Shield size={18} />, label: 'Quality Inspection', path: '/procurement/inspections' },
     { icon: <FilePlus size={18} />, label: 'Material Receipts', path: '/procurement/receipts' },
     { icon: <Box size={18} />, label: 'Inventory', path: '/procurement/inventory' },
     { icon: <Wrench size={18} />, label: 'Equipment Procurement', path: '/procurement/equipment' },
@@ -107,15 +101,16 @@ const navPO = [
   ]},
 ];
 
-// ─── Accounts ─────────────────────────────────────────────
+// Accounts Navigation
 const navAccounts = [
   { section: 'TRANSACTIONS', items: [
     { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/accounts' },
     { icon: <ShoppingCart size={18} />, label: 'Purchase Orders', path: '/accounts/purchase-orders' },
     { icon: <FilePlus size={18} />, label: 'Material Receipts', path: '/accounts/receipts' },
+    { icon: <Box size={18} />, label: 'Inventory', path: '/accounts/inventory' },
     { icon: <FileText size={18} />, label: 'Invoices', path: '/accounts/invoices' },
     { icon: <FileCheck size={18} />, label: 'Invoice Verification', path: '/accounts/invoice-verification' },
-    { icon: <IndianRupee size={18} />, label: 'Payments', path: '/accounts/payments' },
+    { icon: <CreditCard size={18} />, label: 'Payments', path: '/accounts/payments' },
     { icon: <Calendar size={18} />, label: 'Payment Schedule', path: '/accounts/payment-schedule' },
     { icon: <Activity size={18} />, label: 'Expenses', path: '/accounts/expenses' },
   ]},
@@ -134,44 +129,7 @@ const navAccounts = [
   ]},
 ];
 
-// ─── Architect ─────────────────────────────────────────────
-const navArchitect = [
-  { section: 'MAIN', items: [
-    { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/architect' },
-    { icon: <Briefcase size={18} />, label: 'My Projects', path: '/architect/projects' },
-    { icon: <PenTool size={18} />, label: 'Working Drawings', path: '/architect/drawings' },
-    { icon: <GitPullRequest size={18} />, label: 'Drawing Revisions', path: '/architect/revisions' },
-    { icon: <FileText size={18} />, label: 'Design Documents', path: '/architect/design-docs' },
-    { icon: <Layers size={18} />, label: 'Technical Specs', path: '/architect/tech-specs' },
-    { icon: <FileQuestion size={18} />, label: 'Site Queries', path: '/architect/site-queries' },
-    { icon: <AlertTriangle size={18} />, label: 'Issues', path: '/architect/issues' },
-    { icon: <FileCheck size={18} />, label: 'Review Requests', path: '/architect/review-requests' },
-    { icon: <FileText size={18} />, label: 'Documents', path: '/architect/documents' },
-    { icon: <Activity size={18} />, label: 'Activity', path: '/architect/activity' },
-    { icon: <UserCircle size={18} />, label: 'My Profile', path: '/architect/profile' },
-  ]},
-];
-
-// ─── Contractor ────────────────────────────────────────────
-const navContractor = [
-  { section: 'MAIN', items: [
-    { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/contractor' },
-    { icon: <Building2 size={18} />, label: 'My Projects / Sites', path: '/contractor/projects' },
-    { icon: <CheckSquare size={18} />, label: 'Assigned Work', path: '/contractor/work' },
-    { icon: <Calendar size={18} />, label: 'Work Schedule', path: '/contractor/schedule' },
-    { icon: <HardHat size={18} />, label: 'Labour & Crew', path: '/contractor/crew' },
-    { icon: <ClipboardList size={18} />, label: 'Work Updates', path: '/contractor/updates' },
-    { icon: <Package size={18} />, label: 'Material Requests', path: '/contractor/materials' },
-    { icon: <Wrench size={18} />, label: 'Equipment', path: '/contractor/equipment' },
-    { icon: <AlertTriangle size={18} />, label: 'Issues', path: '/contractor/issues' },
-    { icon: <FileText size={18} />, label: 'Documents', path: '/contractor/documents' },
-    { icon: <BarChart2 size={18} />, label: 'Reports', path: '/contractor/reports' },
-    { icon: <Activity size={18} />, label: 'Activity', path: '/contractor/activity' },
-    { icon: <UserCircle size={18} />, label: 'My Profile', path: '/contractor/profile' },
-  ]},
-];
-
-// ─── Sales ─────────────────────────────────────────────────
+// Sales Navigation
 const navSales = [
   { section: 'SALES', items: [
     { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/sales' },
@@ -181,8 +139,8 @@ const navSales = [
     { icon: <Calendar size={18} />, label: 'Bookings', path: '/sales/bookings' },
     { icon: <FileSignature size={18} />, label: 'Agreements', path: '/sales/agreements' },
     { icon: <CreditCard size={18} />, label: 'Payment Schedule', path: '/sales/payment-schedule' },
-    { icon: <IndianRupee size={18} />, label: 'Receivables', path: '/sales/receivables' },
-    { icon: <Bell size={18} />, label: 'Follow-ups', path: '/sales/followups' },
+    { icon: <CreditCard size={18} />, label: 'Receivables', path: '/sales/receivables' },
+    { icon: <Calendar size={18} />, label: 'Follow-ups', path: '/sales/followups' },
   ]},
   { section: 'REPORTS', items: [
     { icon: <BarChart2 size={18} />, label: 'Reports', path: '/sales/reports' },
@@ -198,8 +156,6 @@ const roleNavMap = {
   se: navSE,
   po: navPO,
   accounts: navAccounts,
-  architect: navArchitect,
-  contractor: navContractor,
   sales: navSales,
 };
 
@@ -209,8 +165,6 @@ const roleUserMap = {
   se: { initials: 'RK', name: 'Rajesh K', role: 'Site Engineer' },
   po: { initials: 'PR', name: 'Priya Rao', role: 'Procurement Officer' },
   accounts: { initials: 'AC', name: 'Anjali Chauhan', role: 'Accounts' },
-  architect: { initials: 'VP', name: 'Vikram Patel', role: 'Architect' },
-  contractor: { initials: 'RC', name: 'Ramesh Contractor', role: 'Contractor' },
   sales: { initials: 'RS', name: 'Riya Sharma', role: 'Sales Executive' },
 };
 
@@ -222,42 +176,47 @@ export default function Sidebar({ role = 'admin' }) {
   const navSections = roleNavMap[role] || navAdmin;
   const user = roleUserMap[role] || roleUserMap.admin;
 
-  const isActive = (path) => {
-    if (!path) return false;
-    const roots = ['/admin', '/pm', '/engineer', '/procurement', '/accounts', '/architect', '/contractor', '/sales'];
-    const isRoot = roots.includes(path);
-    if (isRoot) return location.pathname === path;
-    return location.pathname.startsWith(path);
+  const isActive = (itemPath) => {
+    if (!itemPath) return false;
+    if (itemPath === '/admin' || itemPath === '/pm' || itemPath === '/engineer' ||
+        itemPath === '/procurement' || itemPath === '/accounts' || itemPath === '/sales') {
+      return location.pathname === itemPath;
+    }
+    return location.pathname.startsWith(itemPath);
   };
 
   return (
-    <aside className={`sidebar ${collapsed ? 'sidebar-collapsed' : ''}`}>
-      <div className="sidebar-logo" onClick={() => setCollapsed(c => !c)} style={{ cursor: 'pointer' }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: collapsed ? 0 : '8px', flexShrink: 0 }}>
-          <path d="M12 2L2 22H6.5L12 11L17.5 22H22L12 2Z" fill="white" />
-        </svg>
-        {!collapsed && <span className="logo-text">ALIGN</span>}
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+      <div className="sidebar-logo">
+        <div className="logo-icon-wrapper" onClick={() => navigate(navSections[0]?.items[0]?.path || '/')}>
+          <div className="logo-icon-svg">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 22H6.5L12 11L17.5 22H22L12 2Z" fill="var(--color-blue)" />
+            </svg>
+          </div>
+          {!collapsed && <span className="logo-text">ALIGN</span>}
+        </div>
       </div>
 
-      <div className="sidebar-scroll">
+      <div className="nav-container">
         {navSections.map((section) => (
           <div className="nav-section" key={section.section} style={{ marginTop: section.section === 'DASHBOARD' || section.section === 'MAIN' || section.section === 'SALES' || section.section === 'TRANSACTIONS' ? 0 : undefined }}>
-            {!collapsed && <span className="section-title">{section.section}</span>}
+            {!collapsed && <div className="nav-section-title">{section.section}</div>}
             <ul className="nav-list">
-              {section.items.map((item, idx) => (
+              {section.items.map((item) => (
                 <li
-                  key={idx}
+                  key={item.label}
                   className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
                   onClick={() => item.path && navigate(item.path)}
-                  title={collapsed ? item.label : ''}
+                  title={collapsed ? item.label : undefined}
                 >
                   <div className="nav-item-content">
                     <span className="nav-icon">{item.icon}</span>
                     {!collapsed && <span className="nav-label">{item.label}</span>}
+                    {!collapsed && item.badge && (
+                      <span className="nav-badge bg-blue">{item.badge}</span>
+                    )}
                   </div>
-                  {!collapsed && item.badge && (
-                    <span className="nav-badge bg-blue">{item.badge}</span>
-                  )}
                 </li>
               ))}
             </ul>
@@ -265,15 +224,25 @@ export default function Sidebar({ role = 'admin' }) {
         ))}
       </div>
 
-      <div className="sidebar-footer">
-        <div className="sidebar-user">
-          <div className="sidebar-avatar" style={{ background: 'var(--bg-sidebar-active)' }}>
+      <div className="sidebar-profile">
+        <div className="profile-container">
+          <div
+            className="avatar-sm"
+            style={{
+              background: role === 'admin' ? 'var(--color-blue)' :
+                         role === 'pm' ? 'var(--color-teal)' :
+                         role === 'se' ? 'var(--color-slate)' :
+                         role === 'po' ? 'var(--color-purple)' :
+                         role === 'accounts' ? '#0d9488' :
+                         'var(--color-orange)',
+            }}
+          >
             {user.initials}
           </div>
           {!collapsed && (
-            <div className="sidebar-user-info">
-              <span className="sidebar-user-name">{user.name}</span>
-              <span className="sidebar-user-role">{user.role}</span>
+            <div className="profile-info">
+              <span className="profile-name">{user.name}</span>
+              <span className="profile-role">{user.role}</span>
             </div>
           )}
           {!collapsed && <ChevronDown size={16} className="nav-chevron" />}

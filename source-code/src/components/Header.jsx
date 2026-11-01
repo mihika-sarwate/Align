@@ -10,8 +10,6 @@ const roleUserMap = {
   se:        { initials: 'RK', name: 'Rajesh K',           role: 'Site Engineer' },
   po:        { initials: 'PR', name: 'Priya Rao',          role: 'Procurement Officer' },
   accounts:  { initials: 'AC', name: 'Anjali Chauhan',     role: 'Accounts' },
-  architect: { initials: 'VP', name: 'Vikram Patel',       role: 'Architect' },
-  contractor:{ initials: 'RC', name: 'Ramesh Contractor',  role: 'Contractor' },
   sales:     { initials: 'RS', name: 'Riya Sharma',        role: 'Sales Executive' },
 };
 
@@ -42,7 +40,6 @@ export default function Header({ role = 'admin' }) {
     navigate('/login');
     window.location.reload();
   };
-
 
   return (
     <header className="header">
@@ -120,7 +117,8 @@ export default function Header({ role = 'admin' }) {
               background: role === 'admin' ? 'var(--color-blue)' :
                          role === 'pm' ? 'var(--color-teal)' :
                          role === 'se' ? 'var(--color-slate)' :
-                         role === 'architect' ? 'var(--color-purple)' :
+                         role === 'po' ? 'var(--color-purple)' :
+                         role === 'accounts' ? '#0d9488' :
                          'var(--color-orange)',
             }}
           >
