@@ -120,13 +120,36 @@ function reducer(state, action) {
 
     // ——— TASKS ———
     case 'CREATE_TASK': {
-      const task = { ...action.payload, id: genId('TSK'), updates: [], attachments: [] };
+      const task = { ...action.payload, id: action.payload.id || genId('TSK'), updates: [], attachments: [] };
       const newActivity = addActivity(state, 'Created', action.payload.createdBy || 'EMP-001', 'Tasks', task.id, task.projectId, task.siteId, `Created task ${task.title}`);
       const updatedNotifs = addNotification(state, task.assignedTo, 'task', 'New Task Assigned', `${task.title} assigned to you.`, '/engineer/tasks');
       return { ...state, tasks: [task, ...state.tasks], activity: newActivity, notifications: updatedNotifs };
     }
     case 'UPDATE_TASK': {
       return { ...state, tasks: state.tasks.map(t => t.id === action.payload.id ? { ...t, ...action.payload } : t) };
+    }
+    case 'UPDATE_TASK_STATUS': {
+      const { id, status, note, by } = action.payload;
+      const tasks = state.tasks.map(t => {
+        if (t.id !== id) return t;
+        const update = { by: by || 'User', date: new Date().toLocaleDateString('en-IN'), note: note || `Status changed to ${status}` };
+        return { ...t, status, updates: [...(t.updates || []), update] };
+      });
+      const task = tasks.find(t => t.id === id);
+      const newActivity = addActivity({ ...state, tasks }, 'Updated', by || 'User', 'Tasks', id, task?.projectId, task?.siteId, `Task ${id} status marked ${status}`);
+      return { ...state, tasks, activity: newActivity };
+    }
+    case 'UPDATE_TASK_PROGRESS': {
+      const { id, actualQty, note, by } = action.payload;
+      const tasks = state.tasks.map(t => {
+        if (t.id !== id) return t;
+        const updates = note ? [...(t.updates || []), { by: by || 'Site Engineer', date: new Date().toLocaleDateString('en-IN'), note }] : (t.updates || []);
+        const newStatus = actualQty >= (t.plannedQty || 100) ? 'Submitted' : 'In Progress';
+        return { ...t, actualQty, status: newStatus, updates };
+      });
+      const task = tasks.find(t => t.id === id);
+      const newActivity = addActivity({ ...state, tasks }, 'Progress Logged', by || 'Site Engineer', 'Tasks', id, task?.projectId, task?.siteId, `Task ${id} progress updated to ${actualQty} ${task?.unit || ''}`);
+      return { ...state, tasks, activity: newActivity };
     }
     case 'TASK_STATUS_CHANGE': {
       const { taskId, newStatus, note, by } = action.payload;
@@ -153,13 +176,19 @@ function reducer(state, action) {
       return { ...state, employees: state.employees.map(e => e.id === action.payload.id ? { ...e, ...action.payload } : e) };
     }
 
+    // ——— MATERIALS & CATALOGUE ———
+    case 'CREATE_MATERIAL': {
+      const mat = { ...action.payload, id: action.payload.id || genId('MAT') };
+      return { ...state, materials: [mat, ...state.materials] };
+    }
+
     // ——— MATERIAL REQUESTS ———
     case 'CREATE_MATERIAL_REQUEST': {
-      const mrq = { ...action.payload, id: genId('MRQ'), status: 'Pending', attachments: [] };
+      const mrq = { ...action.payload, id: action.payload.id || genId('MRQ'), status: 'Pending', attachments: [] };
       const newActivity = addActivity(state, 'Created', mrq.submittedBy, 'Material Requests', mrq.id, mrq.projectId, mrq.siteId, `Material request for ${mrq.materialName} submitted`);
       const pm = state.sites.find(s => s.id === mrq.siteId)?.pm;
-      const notifs = pm ? addNotification({ ...state, activity: newActivity }, pm, 'material', 'Material Request Pending', `${mrq.materialName} — ${mrq.qty} ${mrq.unit} requested.`, '/pm/materials') : [...state, activity];
-      return { ...state, materialRequests: [mrq, ...state.materialRequests], activity: newActivity, notifications: Array.isArray(notifs) ? notifs : state.notifications };
+      const notifs = pm ? addNotification({ ...state, activity: newActivity }, pm, 'material', 'Material Request Pending', `${mrq.materialName} — ${mrq.qty} ${mrq.unit} requested.`, '/pm/materials') : addNotification({ ...state, activity: newActivity }, 'EMP-007', 'material', 'Material Requisition Created', `${mrq.materialName} requested on site ${mrq.siteId}`, '/procurement/material-requests');
+      return { ...state, materialRequests: [mrq, ...state.materialRequests], activity: newActivity, notifications: notifs };
     }
     case 'UPDATE_MATERIAL_REQUEST': {
       return { ...state, materialRequests: state.materialRequests.map(m => m.id === action.payload.id ? { ...m, ...action.payload } : m) };
@@ -286,12 +315,24 @@ function reducer(state, action) {
 
     // ——— ISSUES ———
     case 'CREATE_ISSUE': {
-      const issue = { ...action.payload, id: genId('ISS'), status: 'Open', comments: [], attachments: [] };
-      const newActivity = addActivity(state, 'Created', issue.raisedBy, 'Issues', issue.id, issue.projectId, issue.siteId, `Issue raised: ${issue.description.substring(0, 60)}`);
-      return { ...state, issues: [issue, ...state.issues], activity: newActivity };
+      const issue = { ...action.payload, id: action.payload.id || genId('ISS'), status: action.payload.status || 'Open', comments: action.payload.comments || [], attachments: [] };
+      const newActivity = addActivity(state, 'Created', issue.raisedBy || 'User', 'Issues', issue.id, issue.projectId, issue.siteId, `Issue raised: ${(issue.title || issue.description || '').substring(0, 60)}`);
+      // Notify PM and Procurement if Material / Vendor issue
+      let notifs = state.notifications;
+      if (issue.category === 'Material' || issue.category === 'Vendor' || issue.category === 'Procurement') {
+        notifs = addNotification({ ...state, notifications: notifs }, 'EMP-007', 'issue', 'Material Escalation', `${issue.title} reported on site ${issue.siteId}`, '/procurement/issues');
+      }
+      return { ...state, issues: [issue, ...state.issues], activity: newActivity, notifications: notifs };
     }
     case 'UPDATE_ISSUE': {
       return { ...state, issues: state.issues.map(i => i.id === action.payload.id ? { ...i, ...action.payload } : i) };
+    }
+    case 'UPDATE_ISSUE_STATUS': {
+      const { id, status, resolution, by } = action.payload;
+      const issues = state.issues.map(i => i.id === id ? { ...i, status, resolution: resolution || i.resolution } : i);
+      const target = issues.find(i => i.id === id);
+      const newActivity = addActivity({ ...state, issues }, 'Updated', by || 'User', 'Issues', id, target?.projectId, target?.siteId, `Issue ${id} marked ${status}`);
+      return { ...state, issues, activity: newActivity };
     }
     case 'ADD_ISSUE_COMMENT': {
       const { issueId, comment } = action.payload;
@@ -432,14 +473,29 @@ function reducer(state, action) {
 
     // ——— RFQS ———
     case 'CREATE_RFQ': {
-      const rfq = { ...action.payload, id: genId('RFQ'), status: 'Open', createdDate: new Date().toLocaleDateString('en-IN') };
-      return { ...state, rfqs: [rfq, ...state.rfqs] };
+      const rfq = { ...action.payload, id: action.payload.id || genId('RFQ'), status: 'Open', createdDate: new Date().toLocaleDateString('en-IN') };
+      const newActivity = addActivity(state, 'Created', 'Priya Rao (PO)', 'RFQs', rfq.id, '', '', `RFQ ${rfq.id} floated to vendors`);
+      return { ...state, rfqs: [rfq, ...state.rfqs], activity: newActivity };
     }
 
     // ——— QUOTATIONS ———
     case 'CREATE_QUOTATION': {
-      const q = { ...action.payload, id: genId('QTN'), status: 'Pending', receivedDate: new Date().toLocaleDateString('en-IN') };
+      const q = { ...action.payload, id: action.payload.id || genId('QTN'), status: 'Pending', receivedDate: new Date().toLocaleDateString('en-IN') };
       return { ...state, quotations: [q, ...state.quotations] };
+    }
+    case 'UPDATE_QUOTATION_STATUS': {
+      const { id, status } = action.payload;
+      const quotations = (state.quotations || []).map(q => q.id === id ? { ...q, status } : q);
+      const newActivity = addActivity({ ...state, quotations }, 'Updated', 'Priya Rao (PO)', 'Quotations', id, '', '', `Quotation ${id} marked ${status}`);
+      return { ...state, quotations, activity: newActivity };
+    }
+
+    // ——— RECEIVABLES ———
+    case 'COLLECT_RECEIVABLE': {
+      const id = typeof action.payload === 'object' ? action.payload.id : action.payload;
+      const receivables = (state.receivables || []).map(r => r.id === id ? { ...r, status: 'Collected', receivedDate: new Date().toLocaleDateString('en-IN') } : r);
+      const newActivity = addActivity({ ...state, receivables }, 'Collected', 'Riya Sharma (Sales)', 'Receivables', id, '', '', `Receivable milestone ${id} collected`);
+      return { ...state, receivables, activity: newActivity };
     }
 
     // ——— SITE QUERIES ———
@@ -519,8 +575,52 @@ function reducer(state, action) {
   }
 }
 
+const STORAGE_KEY = 'align_app_state_v1';
+
+function loadPersistedState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return initialState;
+    const parsed = JSON.parse(raw);
+    return {
+      ...initialState,
+      ...parsed,
+      // Ensure essential arrays are preserved if schema updated
+      projects: parsed.projects || initialState.projects,
+      sites: parsed.sites || initialState.sites,
+      tasks: parsed.tasks || initialState.tasks,
+      materials: parsed.materials || initialState.materials,
+      inventory: parsed.inventory || initialState.inventory,
+      materialRequests: parsed.materialRequests || initialState.materialRequests,
+      purchaseOrders: parsed.purchaseOrders || initialState.purchaseOrders,
+      deliveries: parsed.deliveries || initialState.deliveries,
+      receipts: parsed.receipts || initialState.receipts,
+      invoices: parsed.invoices || initialState.invoices,
+      payments: parsed.payments || initialState.payments,
+      expenses: parsed.expenses || initialState.expenses,
+      issues: parsed.issues || initialState.issues,
+      notifications: parsed.notifications || initialState.notifications,
+      activity: parsed.activity || initialState.activity,
+      contractors: parsed.contractors || initialState.contractors,
+      qualityInspections: parsed.qualityInspections || initialState.qualityInspections,
+    };
+  } catch (e) {
+    console.error('Failed to load persisted state:', e);
+    return initialState;
+  }
+}
+
 export function AppProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, null, loadPersistedState);
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn('Failed to persist state to localStorage:', e);
+    }
+  }, [state]);
+
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       {children}
